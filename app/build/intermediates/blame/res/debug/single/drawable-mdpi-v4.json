@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\background_login.xml",
+        "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\drawable-mdpi\\background_login.xml"
+    },
+    {
+        "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\background_login_div_bg.xml",
+        "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\drawable-mdpi\\background_login_div_bg.xml"
+    },
+    {
+        "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\default_head.jpg",
+        "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\drawable-mdpi\\default_head.jpg"
+    },
+    {
+        "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\logn.jpg",
+        "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\drawable-mdpi\\logn.jpg"
+    }
+]

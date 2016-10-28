@@ -4,10 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.grgbanking.ct.entity.ConvoyManInfo;
 import com.grgbanking.ct.entity.LoginInfo;
+import com.grgbanking.ct.entity.PdaCashboxInfo;
+import com.grgbanking.ct.entity.PdaNetPersonInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,18 +129,45 @@ public class DBManager {
     public void addNetInfo(List<NetInfo> netInfos) {
         try {
             ContentValues values = new ContentValues();
-            Log.i("", "===size is ===" + netInfos.size());
             for (NetInfo netInfo : netInfos) {
                 db = helper.getWritableDatabase();
                 values.put("bankId", netInfo.getBankId());
-                Log.i("", "==bankid is===" + netInfo.getBankId());
                 values.put("bankName", netInfo.getBankName());
                 values.put("netTaskStatus", netInfo.getNetTaskStatus());
                 db.insert(DBHelper.TABLE_PdaNetInfo_NAME, null, values);
                 db.close();
+                //插入网点人员
+                ContentValues values1 = new ContentValues();
+                List<PdaNetPersonInfo> personList = netInfo.getNetPersonInfoList();
+                if (personList != null && personList.size() > 0) {
+                    for (PdaNetPersonInfo personInfo : personList) {
+                        db = helper.getWritableDatabase();
+                        values1.put("bankId", netInfo.getBankId());
+                        values1.put("netPersonId", personInfo.getNetPersonId());
+                        values1.put("netPersonName", personInfo.getNetPersonName());
+                        values1.put("netPersonRFID", personInfo.getNetPersonRFID());
+                        db.insert(DBHelper.TABLE_NetMan_NAME, null, values1);
+                        db.close();
+                    }
+                }
+                //插入款箱
+                ContentValues values2 = new ContentValues();
+                List<PdaCashboxInfo> boxList = netInfo.getCashBoxInfoList();
+                if (boxList != null && boxList.size() > 0) {
+                    for (PdaCashboxInfo cashboxInfo : boxList) {
+                        db = helper.getWritableDatabase();
+                        values2.put("bankId", cashboxInfo.getBankId());
+                        values2.put("rfidNum", cashboxInfo.getRfidNum());
+                        values2.put("boxSn", cashboxInfo.getBoxSn());
+                        db.insert(DBHelper.TABLE_PdaCashboxInfo_NAME, null, values2);
+                        db.close();
+                    }
+                }
+
             }
         } finally {
             //            db.endTransaction();//结束事物
+
         }
     }
 

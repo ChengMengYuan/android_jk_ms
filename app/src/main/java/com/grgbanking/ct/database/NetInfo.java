@@ -1,5 +1,10 @@
 package com.grgbanking.ct.database;
 
+import com.grgbanking.ct.entity.PdaCashboxInfo;
+import com.grgbanking.ct.entity.PdaNetPersonInfo;
+
+import java.util.List;
+
 /**
  * @author ：     cmy
  * @version :     2016/10/19.
@@ -11,6 +16,8 @@ public class NetInfo {
     private String bankId;
     private String bankName;
     private String netTaskStatus;
+    private List<PdaCashboxInfo> cashBoxInfoList;
+    private List<PdaNetPersonInfo> netPersonInfoList;
 
     public String getBankId() {
         return bankId;
@@ -47,5 +54,21 @@ public class NetInfo {
 
     public NetInfo() {
 
+    }
+
+    public List<PdaNetPersonInfo> getNetPersonInfoList() {
+        return netPersonInfoList;
+    }
+
+    public void setNetPersonInfoList(List<PdaNetPersonInfo> netPersonInfoList) {
+        this.netPersonInfoList = netPersonInfoList;
+    }
+
+    public List<PdaCashboxInfo> getCashBoxInfoList() {
+        return cashBoxInfoList;
+    }
+
+    public void setCashBoxInfoList(List<PdaCashboxInfo> cashBoxInfoList) {
+        this.cashBoxInfoList = cashBoxInfoList;
     }
 }

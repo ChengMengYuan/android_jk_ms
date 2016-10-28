@@ -38,9 +38,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.grgbanking.ct.http.ResultInfo.CODE_GUARDMANIINFO;
 
@@ -89,11 +87,8 @@ public class NetOutInActivity extends Activity {
             public void onClick(View v) {
                 showWaitDialog("正在下载，请稍候...");
                 final LoginUser loginUser = DataCach.loginUser;
-
                 List<NameValuePair> params = new ArrayList<NameValuePair>();
                 params.add(new BasicNameValuePair("login_name", loginUser.getLoginName()));
-
-
                 //访问后台服务器进行登录操作
                 new HttpPostUtils(Constants.URL_DOWNINFO, params, new UICallBackDao() {
                     @Override
@@ -114,7 +109,6 @@ public class NetOutInActivity extends Activity {
                         Log.v(TAG, resultInfo.getCode());
                         Log.v(TAG, resultInfo.getMessage());
                         Log.v(TAG, "" + resultInfo.getJsonArray());
-
 
                         Toast.makeText(context, resultInfo.getMessage(), Toast.LENGTH_LONG).show();
                         //取出押运人员数据
@@ -154,13 +148,15 @@ public class NetOutInActivity extends Activity {
                                 netInfo.setBankId(info.getBankId());
                                 netInfo.setNetTaskStatus(info.getNetTaskStatus());
                                 netInfo.setBankName(info.getBankName());
+                                netInfo.setNetPersonInfoList(info.getNetPersonInfoList());
+                                netInfo.setCashBoxInfoList(info.getCashBoxInfoList());
                                 netInfos.add(netInfo);
                             }
                             //存入数据库
                             DBManager manager = new DBManager(context);
                             manager.addNetInfo(netInfos);
                         }
-                        //查询银行网点信息
+                        //查询网点信息
                         DBManager netInfoDb = new DBManager(context);
                         ArrayList<NetInfo> netInfolist = (ArrayList<NetInfo>) netInfoDb.queryNetInfo();
                         if (netInfolist != null && netInfolist.size() > 0) {
@@ -172,6 +168,8 @@ public class NetOutInActivity extends Activity {
                                 Log.i(TAG, "-----");
                             }
                         }
+
+
 
                         //保存登录人员
                         List<PdaLoginManInfo> pdaLoginManInfoList = pdaLoginMsg.getPdaLoginManInfo();
@@ -189,7 +187,6 @@ public class NetOutInActivity extends Activity {
                             DBManager loginDb = new DBManager(context);
                             loginDb.addLoginMan(loginInfos);
                         }
-
                         //保存所有款箱
                         List<PdaCashboxInfo> pdaCashboxInfoList = pdaLoginMsg.getPdaCashboxInfo();
                         if (pdaCashboxInfoList != null && pdaCashboxInfoList.size() > 0) {
@@ -205,9 +202,12 @@ public class NetOutInActivity extends Activity {
                             cashBoxDB.addCashBox(cashBoxes);
                         }
                     }
-                }).execute();
+                }
+
+                ).execute();
             }
-        });
+        }
+        );
 
 
         netInButton.setOnClickListener(new OnClickListener() {
@@ -215,13 +215,10 @@ public class NetOutInActivity extends Activity {
             public void onClick(View v) {
                 showWaitDialog("正在加载网点入库信息...");
                 LoginUser loginUser = DataCach.loginUser;
-
                 List<NameValuePair> params = new ArrayList<NameValuePair>();
                 params.add(new BasicNameValuePair("login_name", loginUser.getLoginName()));
                 params.add(new BasicNameValuePair("scanning_type", Constants.LOGIN_NET_IN));
-
                 // TODO: 2016/10/27  访问数据库组装数据
-
                 //访问数据库
                 DBManager db = new DBManager(context);
                 PdaLoginMessage pdaLoginMessage = new PdaLoginMessage();
@@ -239,7 +236,6 @@ public class NetOutInActivity extends Activity {
                     }
                     pdaLoginMessage.setGuardManInfoList(pdaGuarManInfoList);
                 }
-
                 //取出网点人员
                 List<NetMan> netMen = db.queryNetMan();
                 List<PdaNetPersonInfo> pdaNetPersonInfoList = new ArrayList<PdaNetPersonInfo>();
@@ -251,20 +247,7 @@ public class NetOutInActivity extends Activity {
                         pdaNetPersonInfo.setNetPersonRFID(info.getNetPersonRFID());
                         pdaNetPersonInfoList.add(pdaNetPersonInfo);
                     }
-
                 }
-
-                //取出所有款箱
-                List<CashBox> CashboxInfo = db.queryCashBox();
-                Map<String, String> pdaCashboxInfoMap = new HashMap<String, String>();
-                if (CashboxInfo != null && CashboxInfo.size() > 0) {
-                    for (CashBox info : CashboxInfo) {
-                        PdaCashboxInfo pdaCashboxInfo = new PdaCashboxInfo();
-                        pdaCashboxInfoMap.put(info.getBoxSn(), info.getRfidNum());
-                    }
-                }
-                pdaLoginMessage.setAllPdaBoxsMap(pdaCashboxInfoMap);
-
 
                 //取出网点信息
                 ArrayList<NetInfo> netInfo = (ArrayList<NetInfo>) db.queryNetInfo();
@@ -297,7 +280,6 @@ public class NetOutInActivity extends Activity {
                         JSONObject jsonObject = resultInfo.getJsonObject();
                         PdaLoginMessage pdaLoginMessage = PdaLoginMessage.JSONtoPdaLoginMessage(jsonObject);
                         DataCach.setPdaLoginMessage(pdaLoginMessage);
-
                         DataCach.netType = Constants.NET_COMMIT_TYPE_IN;
 
                         hideWaitDialog();
@@ -309,7 +291,9 @@ public class NetOutInActivity extends Activity {
                     }
                 }).execute();
             }
-        });
+        }
+
+        );
 
         netOutButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -347,7 +331,9 @@ public class NetOutInActivity extends Activity {
                     }
                 }).execute();
             }
-        });
+        }
+
+        );
     }
 
 
@@ -358,6 +344,7 @@ public class NetOutInActivity extends Activity {
      *
      * @param msg
      */
+
     private void showWaitDialog(String msg) {
         if (pd == null) {
             pd = new ProgressDialog(this);

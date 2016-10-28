@@ -65,7 +65,6 @@ public class LoginActivity extends Activity {
         //		startService(new Intent(context, GrgbankService.class));
 
 
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.login);
 
@@ -94,7 +93,7 @@ public class LoginActivity extends Activity {
                 passwordViewValue = passwordView.getText().toString();
 
                 if (StringTools.isEmpty(loginNameViewValue) || StringTools.isEmpty(passwordViewValue)) {
-                    Log.v("V1","用户名或密码为空");
+                    Log.v("V1", "用户名或密码为空");
                     Toast.makeText(context, "用户名或密码不能为空！", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -113,43 +112,26 @@ public class LoginActivity extends Activity {
 
                     @Override
                     public void callBack(ResultInfo resultInfo) {
-                        Log.v("V2","访问后台服务器");
-                        //						try {
-                        //							userId = resultInfo.getJsonObject().getString("id");
-                        //							userName = resultInfo.getJsonObject().getString("loginName");
-                        //						} catch (Exception e) {
-                        //							e.printStackTrace();
-                        //						}
-                        if (!ResultInfo.CODE_GUARDMANIINFO.equals(resultInfo.getCode())) {
-                            Toast.makeText(context, resultInfo.getMessage(), Toast.LENGTH_LONG).show();
-                            loginButtonView.setText("登录");
-                            loginButtonView.setEnabled(true);
+                        if (resultInfo.getCode() != null && !resultInfo.getCode().isEmpty()) {
+                            success();
+                            if (ResultInfo.CODE_GUARDMANIINFO.equals(resultInfo.getCode())) {
+                                Intent intent = new Intent();
+                                intent.setClass(LoginActivity.this, NetOutInActivity.class);
 
-                            LoginUser loginUser = DataCach.loginUser;
-                            loginUser.setLoginName(loginNameViewValue);
-                            loginUser.setPassword(passwordViewValue);
+                                startActivity(intent);
+                                finish();
+                            }
+                            if (ResultInfo.CODE_PEIXIANG.equals(resultInfo.getCode())) {
+                                success();
+                                Intent intent = new Intent();
+                                intent.setClass(LoginActivity.this, PeixiangActivity.class);
 
-                            Intent intent = new Intent();
-                            intent.setClass(LoginActivity.this, NetOutInActivity.class);
-
-                            startActivity(intent);
-                            finish();
-
-                        } else if (!ResultInfo.CODE_PEIXIANG.equals(resultInfo.getCode())) {
-                            Toast.makeText(context, resultInfo.getMessage(), Toast.LENGTH_LONG).show();
-                            loginButtonView.setText("登录");
-                            loginButtonView.setEnabled(true);
-
-                            Intent intent = new Intent();
-                            intent.setClass(LoginActivity.this, PeixiangdtActivity.class);
-
-                            startActivity(intent);
-                            finish();
-
+                                startActivity(intent);
+                                finish();
+                            }
                         } else {
-                            Toast.makeText(context, resultInfo.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, resultInfo.getMessage(), Toast.LENGTH_SHORT);
                         }
-
                     }
                 }).execute();
             }
@@ -159,7 +141,7 @@ public class LoginActivity extends Activity {
     /*
      * findViewById.
      */
-    public void findViewById(){
+    public void findViewById() {
         remPasswordView = (CheckBox) this.findViewById(R.id.cb);
         loginNameView = (EditText) this.findViewById(R.id.username_edit);
         passwordView = (EditText) this.findViewById(R.id.password_edit);
@@ -178,7 +160,6 @@ public class LoginActivity extends Activity {
 
         @Override
         public boolean handleMessage(Message arg0) {
-            // TODO Auto-generated method stub
             switch (arg0.what) {
                 case 0:
                     showUpdataDialog(arg0.getData().getString("address"));
@@ -203,7 +184,6 @@ public class LoginActivity extends Activity {
         //		try {
         //			detail_branch_name.setText("版本号:v"+getPackageManager().getPackageInfo(context.getPackageName(),0).versionName);
         //		} catch (NameNotFoundException e) {
-        //			// TODO Auto-generated catch block
         //			e.printStackTrace();
         //		}
         detail_branch_name.setText("版本号:v1.0");
@@ -217,7 +197,6 @@ public class LoginActivity extends Activity {
 
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
-                // TODO Auto-generated method stub
                 downLoadFile(url);
                 showWaitDialog();
             }
@@ -226,7 +205,6 @@ public class LoginActivity extends Activity {
 
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
-                // TODO Auto-generated method stub
                 finish();
             }
         });
@@ -245,7 +223,6 @@ public class LoginActivity extends Activity {
 
             @Override
             public void run() {
-                // TODO Auto-generated method stub
                 try {
                     String add = CheckUpdateInfos.getUpdataInfoJSON(LoginActivity.this);
                     Message msg = new Message();
@@ -256,7 +233,6 @@ public class LoginActivity extends Activity {
                     handler.sendMessage(msg);
                     Log.v("tag", "服务器新版本下载地址： " + add);
                 } catch (Exception e1) {
-                    // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
             }
@@ -333,5 +309,14 @@ public class LoginActivity extends Activity {
         intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    private void success() {
+        LoginUser loginUser = DataCach.loginUser;
+        loginUser.setLoginName(loginNameViewValue);
+        loginUser.setPassword(passwordViewValue);
+        loginButtonView.setText("登录");
+        loginButtonView.setEnabled(true);
+
     }
 }

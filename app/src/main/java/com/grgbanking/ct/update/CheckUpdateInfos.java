@@ -1,5 +1,12 @@
 package com.grgbanking.ct.update;
 
+import android.content.Context;
+import android.util.Xml;
+
+import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.xmlpull.v1.XmlPullParser;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -8,14 +15,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.xmlpull.v1.XmlPullParser;
-
-
-import android.content.Context;
-import android.util.Xml;
 
 public class CheckUpdateInfos {
 	public static String getUpdataInfoXML(Context context,InputStream is) throws Exception{
@@ -53,7 +52,6 @@ public class CheckUpdateInfos {
 			}
 			return ipObject.getString("app_add");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			//e.printStackTrace();
 		}
 		return down_url;

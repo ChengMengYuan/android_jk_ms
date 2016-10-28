@@ -9,8 +9,14 @@ public class ResultInfo {
 	private String text;
 	private JSONArray jsonArray;
 	private JSONObject jsonObject;
-	public static final String CODE_PEIXIANG="3";//配钞人员
-	public static final String CODE_GUARDMANIINFO="4";//押运人员
+	/**
+	 * 配钞人员
+	 */
+	public static final String CODE_PEIXIANG="3";
+	/**
+	 * 押运人员
+	 */
+	public static final String CODE_GUARDMANIINFO="4";
 	public static final String CODE_SUCCESS="1";
 	public static final String CODE_ERROR="2";
 	

@@ -46,13 +46,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		// TODO Auto-generated method stub
 		createTable(db);
 	}
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	public synchronized Cursor queryMethod(String table, String[] columns,
@@ -103,7 +101,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			return;
 		}
 	}
-	
+
 	/** �������SQL��������  */
 	public  String getCreateTableSQL(String tableName, String[] paramList) {
 		if(paramList == null||paramList.length<1){
@@ -126,7 +124,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		sb.append(")");
 		return sb.toString();
 	}
-	
+
 	/** �жϱ��Ƿ����  */
 	public  boolean tableIsExits(DatabaseHelper dh, String tableName) {
 		if (dh == null || tableName == null) {
@@ -144,7 +142,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				}
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 		}
 		return result;
@@ -172,10 +169,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		cursor.close();
 		return count;
 	}
-	
+
 	/** ������ */
 	public void createTable(SQLiteDatabase db){
-		
+
 		db.execSQL(PersonTableHelper.createTableSql);
 	}
 

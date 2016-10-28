@@ -8,16 +8,20 @@
         "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\main_list_item.xml"
     },
     {
-        "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_title.xml",
-        "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\activity_title.xml"
-    },
-    {
         "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\layout\\login.xml",
         "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\login.xml"
     },
     {
+        "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_title.xml",
+        "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\activity_title.xml"
+    },
+    {
         "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\layout\\peixiangdetail.xml",
         "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\peixiangdetail.xml"
+    },
+    {
+        "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\layout\\qcode_list.xml",
+        "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\qcode_list.xml"
     },
     {
         "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\layout\\netoutin.xml",
@@ -46,5 +50,9 @@
     {
         "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\layout\\main.xml",
         "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\main.xml"
+    },
+    {
+        "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\layout\\qcode_activity.xml",
+        "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\qcode_activity.xml"
     }
 ]

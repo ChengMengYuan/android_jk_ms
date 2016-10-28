@@ -22,14 +22,14 @@ public class PeixiangActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.peixiang);
 
-        PxButton =(Button) findViewById(R.id.peixiang_button);
-        Pxback= (Button) findViewById(R.id.net_sysout_view);
+        PxButton = (Button) findViewById(R.id.peixiang_button);
+        Pxback = (Button) findViewById(R.id.net_sysout_view);
 
         PxButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.setClass(PeixiangActivity.this,PeixiangdtActivity.class);
+                intent.setClass(PeixiangActivity.this, QcodeActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -44,7 +44,6 @@ public class PeixiangActivity extends Activity {
         });
 
     }
-
 
 
 }

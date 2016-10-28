@@ -4,36 +4,43 @@ package com.grgbanking.ct.database;
  * 押运人员
  * Created by cmy on 2016/9/14.
  */
-public class ConvoyMan {
-
-    /**
-     *
-     */
-    private String name;
-    private String RFID;
-
-    public String getName() {
-        return name;
+public class ConvoyMan  {
+    public String getGuardManId() {
+        return guardManId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setGuardManId(String guardManId) {
+        this.guardManId = guardManId;
     }
 
-    public String getRFID() {
-        return RFID;
+    public String getGuardManName() {
+        return guardManName;
     }
 
-    public void setRFID(String RFID) {
-        this.RFID = RFID;
+    public void setGuardManName(String guardManName) {
+        this.guardManName = guardManName;
     }
 
+    public String getGuardManRFID() {
+        return guardManRFID;
+    }
+
+    public void setGuardManRFID(String guardManRFID) {
+        this.guardManRFID = guardManRFID;
+    }
+
+    private String guardManId;      //押运人员ID
+    private String guardManName;    //押运人员姓名
+    private String guardManRFID;    //押运人员RFID
+
+    public ConvoyMan(String guardManId,
+                     String guardManName,
+                     String guardManRFID) {
+        this.guardManId = guardManId;
+        this.guardManName = guardManName;
+        this.guardManRFID = guardManRFID;
+    }
     public ConvoyMan(){
 
-    }
-
-    public ConvoyMan(String name,String RFID){
-        this.name=name;
-        this.RFID=RFID;
     }
 }

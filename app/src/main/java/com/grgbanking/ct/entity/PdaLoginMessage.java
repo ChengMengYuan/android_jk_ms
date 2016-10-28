@@ -1,12 +1,12 @@
 package com.grgbanking.ct.entity;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 public class PdaLoginMessage implements Serializable {
 	/**
@@ -90,7 +90,7 @@ public class PdaLoginMessage implements Serializable {
 				plm.setNetInfoList(netInfoList);
 				
 				JSONArray guardManInfoArray = jsonObject.getJSONArray("guardManInfoList");
-				List<PdaGuardManInfo> guardManInfoList = PdaGuardManInfo.JSONArraytoPdaNetPersonInfo(guardManInfoArray);
+				List<PdaGuardManInfo> guardManInfoList = PdaGuardManInfo.JSONArraytoPdaGuardManInfo(guardManInfoArray);
 				plm.setGuardManInfoList(guardManInfoList);
 				
 				JSONArray allPdaBoxsArray = jsonObject.getJSONArray("allPdaBoxsList");

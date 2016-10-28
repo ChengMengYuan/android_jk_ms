@@ -163,6 +163,9 @@ public class PeixiangdtActivity extends Activity {
 
     private Map<String, Integer> data;
 
+    /**
+     * 启动RFID扫描功能刷新扫描款箱数据
+     */
     private void flashInfo() {
         mHandler = new Handler() {
 

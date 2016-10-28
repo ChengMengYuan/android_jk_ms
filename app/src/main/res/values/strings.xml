@@ -44,5 +44,8 @@
     
      <string name="aim_qrcode">请对准想要识别的二维码</string>
     <string name="scan_tips">将二维码图片对准扫描框即可自动扫描</string>
+    <string name="stop">停止</string>
+    <string name="scan">扫描</string>
+    <string name="peixiang">二维码</string>
 
 </resources>

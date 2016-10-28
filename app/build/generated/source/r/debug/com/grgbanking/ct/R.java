@@ -172,7 +172,7 @@ public final class R {
     }
     public static final class id {
         public static final int Button01=0x7f08001d;
-        public static final int ListView01=0x7f080030;
+        public static final int ListView01=0x7f08002c;
         public static final int ListView_boxs=0x7f080024;
         public static final int RelativeLayout01=0x7f080031;
         public static final int RelativeLayout_boxes=0x7f080016;
@@ -184,7 +184,7 @@ public final class R {
         public static final int capture_preview=0x7f080012;
         public static final int capture_scan_line=0x7f080014;
         public static final int cb=0x7f080028;
-        public static final int code=0x7f080043;
+        public static final int code=0x7f080044;
         public static final int content_layout=0x7f080025;
         public static final int cpature_title=0x7f080011;
         public static final int decode=0x7f080002;
@@ -195,45 +195,54 @@ public final class R {
         public static final int detail_btn_commit_n=0x7f08001c;
         public static final int detail_remark=0x7f08001f;
         public static final int detail_title_view=0x7f08001b;
+        public static final int down_button=0x7f08003a;
         public static final int encode_failed=0x7f080005;
         public static final int encode_succeeded=0x7f080006;
         public static final int gridview=0x7f080007;
-        public static final int item_back=0x7f080045;
-        public static final int item_refresh=0x7f080046;
+        public static final int item_back=0x7f08004e;
+        public static final int item_refresh=0x7f08004f;
         public static final int launch_product_query=0x7f080008;
         public static final int list_boxes_img=0x7f080017;
         public static final int list_boxes_title=0x7f080018;
         public static final int list_img=0x7f080032;
         public static final int list_position=0x7f080034;
+        public static final int list_qcdoe=0x7f08004a;
         public static final int list_title=0x7f080033;
         public static final int list_worktime=0x7f080035;
         public static final int login_button=0x7f08002a;
-        public static final int main_bar=0x7f08002c;
-        public static final int main_btn_back=0x7f08002f;
-        public static final int main_title_view=0x7f08002d;
+        public static final int main_bar=0x7f08002d;
+        public static final int main_btn_back=0x7f080030;
+        public static final int main_title_view=0x7f08002e;
         public static final int miniTwitter_logo=0x7f080029;
-        public static final int net_out_button=0x7f08003a;
+        public static final int net_out_button=0x7f08003b;
         public static final int net_sysout_view=0x7f080036;
         public static final int password_edit=0x7f080027;
-        public static final int peixiang_ListView=0x7f080042;
+        public static final int peixiang_ListView=0x7f080043;
         public static final int peixiang_button=0x7f080039;
-        public static final int peixiangdetail_btn_back=0x7f08003b;
-        public static final int peixiangdetail_btn_commit=0x7f08003d;
-        public static final int peixiangdetail_btn_lianjie=0x7f080040;
-        public static final int peixiangdetail_btn_saomiao=0x7f08003e;
-        public static final int peixiangdetail_remark=0x7f08003f;
-        public static final int peixiangdetail_title_view=0x7f08003c;
+        public static final int peixiangdetail_btn_back=0x7f08003c;
+        public static final int peixiangdetail_btn_commit=0x7f08003e;
+        public static final int peixiangdetail_btn_lianjie=0x7f080041;
+        public static final int peixiangdetail_btn_saomiao=0x7f08003f;
+        public static final int peixiangdetail_remark=0x7f080040;
+        public static final int peixiangdetail_title_view=0x7f08003d;
         public static final int peixiangdetail_tv_name=0x7f080038;
         public static final int peixiangdetail_tv_num=0x7f080037;
-        public static final int peixiangdetail_tv_number=0x7f080041;
-        public static final int popupmenu_btn=0x7f08002e;
-        public static final int progress=0x7f080044;
+        public static final int peixiangdetail_tv_number=0x7f080042;
+        public static final int popupmenu_btn=0x7f08002f;
+        public static final int progress=0x7f080045;
+        public static final int qcode_bt_scan=0x7f080047;
+        public static final int qcode_bt_stop=0x7f080049;
+        public static final int qcode_list_bt=0x7f08004c;
+        public static final int qcode_list_item=0x7f08004d;
+        public static final int qcode_list_tv=0x7f08004b;
+        public static final int qcode_title=0x7f080046;
         public static final int quit=0x7f080009;
         public static final int restart_preview=0x7f08000a;
         public static final int return_scan_result=0x7f08000b;
         public static final int search_book_contents_failed=0x7f08000c;
         public static final int search_book_contents_succeeded=0x7f08000d;
         public static final int split=0x7f08000e;
+        public static final int textView=0x7f080048;
         public static final int textView1=0x7f080020;
         public static final int textView2=0x7f080021;
         public static final int textView3=0x7f080023;
@@ -256,6 +265,8 @@ public final class R {
         public static final int peixiangdetail=0x7f030009;
         public static final int peixiangdt_list_item=0x7f03000a;
         public static final int progress=0x7f03000b;
+        public static final int qcode_activity=0x7f03000c;
+        public static final int qcode_list=0x7f03000d;
     }
     public static final class menu {
         public static final int popupmenu=0x7f0a0000;
@@ -296,8 +307,11 @@ public final class R {
         public static final int net_button_in=0x7f09001d;
         public static final int net_button_out=0x7f09001e;
         public static final int net_title=0x7f09001f;
-        public static final int scan_tips=0x7f090020;
-        public static final int sdcard_unfound=0x7f090021;
+        public static final int peixiang=0x7f090020;
+        public static final int scan=0x7f090021;
+        public static final int scan_tips=0x7f090022;
+        public static final int sdcard_unfound=0x7f090023;
+        public static final int stop=0x7f090024;
     }
     public static final class style {
         /**  API 11 theme customizations can go here. 

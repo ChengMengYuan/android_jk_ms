@@ -180,14 +180,12 @@ public class DetailActivity2 extends Activity {
 
 	@Override
 	protected void onStart() {
-		// TODO Auto-generated method stub
 		super.onStart();
 	}
 
 	OnClickListener click = new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-			// TODO Auto-generated method stub
 			switch (arg0.getId()) {
 			case R.id.detail_btn_back:
 				backListPage();
@@ -293,7 +291,6 @@ public class DetailActivity2 extends Activity {
 				.setItems(items, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
 						// 这里item是根据选择的方式， 在items数组里面定义了两种方式，拍照的下标为1所以就调用拍照方法
 						if (which == 1) {
 							takePhoto();
@@ -412,7 +409,7 @@ public class DetailActivity2 extends Activity {
 											&& "200".equals(resultInfo
 													.getCode())) {
 										Toast.makeText(DetailActivity2.this,
-												"上传成功", 5000).show();
+												"上传成功", Toast.LENGTH_LONG).show();
 //										uploadStatusTextView.setText("上传成功。");
 										imageUrl = resultInfo.getMessage();
 										uploadFlag = true;
@@ -551,7 +548,7 @@ public class DetailActivity2 extends Activity {
 	/**
 	 * 根据路径获得突破并压缩返回bitmap用于显示
 	 * 
-	 * @param imagesrc
+	 * @param
 	 * @return
 	 */
 	public static Bitmap getSmallBitmap(String filePath) {

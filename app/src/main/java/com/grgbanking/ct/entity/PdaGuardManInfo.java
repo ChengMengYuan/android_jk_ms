@@ -1,10 +1,10 @@
 package com.grgbanking.ct.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PdaGuardManInfo {
 	private String guardManId;
@@ -28,8 +28,7 @@ public class PdaGuardManInfo {
 	public void setGuardManRFID(String guardManRFID) {
 		this.guardManRFID = guardManRFID;
 	}
-	public static List<PdaGuardManInfo> JSONArraytoPdaNetPersonInfo(
-			JSONArray jsonArray) {
+	public static List<PdaGuardManInfo> JSONArraytoPdaGuardManInfo(JSONArray jsonArray) {
 		List<PdaGuardManInfo> list = null;
 		
 		if (jsonArray != null && jsonArray.length() > 0) {

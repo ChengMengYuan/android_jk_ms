@@ -1,51 +1,33 @@
 package com.grgbanking.ct.database;
 
 /**
- * 登陆人员
- * Created by cmy on 2016/9/14.
+ * @author ：     cmy
+ * @version :     2016/10/19.
+ * @e-mil ：      mengyuan.cheng.mier@gmail.com
+ * @Description :
  */
-public class LoginMan {
 
-    //RFID编号
-    private String RFID;
-    //登录名
-    private String username;
-    //登陆密码
+public class LoginMan extends Person {
+    private String loginId;
+    private String login_name;
     private String password;
-    //个人姓名
-    private String name;
-    //线路
-    private String line;
-    //判断是网点人员or押运人员
     private String flag;
+    private String line;
 
-    public LoginMan(){
-
+    public String getLoginId() {
+        return loginId;
     }
 
-    public LoginMan(String RFID,String username,String password,String name,String line,String flag){
-        this.RFID=RFID;
-        this.username=username;
-        this.password=password;
-        this.name=name;
-        this.line=line;
-        this.flag=flag;
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
     }
 
-    public String getRFID() {
-        return RFID;
+    public String getLogin_name() {
+        return login_name;
     }
 
-    public void setRFID(String RFID) {
-        this.RFID = RFID;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
     }
 
     public String getPassword() {
@@ -56,12 +38,12 @@ public class LoginMan {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
+    public String getFlag() {
+        return flag;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFlag(String flag) {
+        this.flag = flag;
     }
 
     public String getLine() {
@@ -72,12 +54,20 @@ public class LoginMan {
         this.line = line;
     }
 
-    public String getFlag() {
-        return flag;
+    public LoginMan(String loginId,
+                    String login_name,
+                    String password,
+                    String flag,
+                    String line) {
+        this.loginId = loginId;
+        this.login_name = login_name;
+        this.password = password;
+        this.flag = flag;
+        this.line = line;
     }
 
-    public void setFlag(String flag) {
-        this.flag = flag;
+    public LoginMan() {
+
     }
 
 }

@@ -4,15 +4,16 @@ public class Constants {
     //public  static final  String  BASE_SERVER_URL="http://183.63.190.43:6600/hbct"; //河北晨通正式服务器
 
     //	public  static final  String  BASE_SERVER_URL="http://183.63.190.43:6601/ycyt"; //宜昌宜通正式服务器
-    //	public  static final  String  BASE_SERVER_URL="http://192.168.1.107:8087/android_jkweb/"; //宜昌宜通正式服务器
-    public static final String BASE_SERVER_URL = "http://192.128.1.108/android_jkweb/"; //宜昌宜通正式服务器
+    public static final String BASE_SERVER_URL = "http://192.168.1.15:8080/android_jkweb/"; //宜昌宜通正式服务器
+    //    public static final String BASE_SERVER_URL = "http://192.128.1.108/android_jkweb/"; //宜昌宜通正式服务器
+
 
     //public  static final  String  BASE_SERVER_URL="http://10.2.18.32/hbct";  //本机测试
     //public  static final  String  BASE_SERVER_URL="http://192.168.2.102/hbct";  //本机测试
 
-//	public  static final  String  BASE_SERVER_URL="http://192.168.72.102/hbct";  //本机测试
+    //	public  static final  String  BASE_SERVER_URL="http://192.168.72.102/hbct";  //本机测试
 
-//	public static final String URL_GET_USER=BASE_SERVER_URL+"/pda-user!pdaLogin.do";
+    //	public static final String URL_GET_USER=BASE_SERVER_URL+"/pda-user!pdaLogin.do";
     /**
      * PDA登录地址
      */
@@ -27,6 +28,10 @@ public class Constants {
      * PDA交接提交地址
      */
     public static final String URL_NET_IN_COMMIT = BASE_SERVER_URL + "/mobile-message!uploadData.do";
+    /**
+     * 出入库信息下载地址
+     */
+    public static final String URL_DOWNINFO = BASE_SERVER_URL + "/mobile-message!downloadWithoutNet.do";
 
     public static final String URL_GET_TASK_LIST = BASE_SERVER_URL + "/mobile!tasklist.do";
 
@@ -53,7 +58,6 @@ public class Constants {
      */
     public static final String LOGIN_NET_IN = "1";
     /**
-     *
      * 网点任务状态	1:已完成 ； 0：未完成
      */
     public static final String NET_TASK_STATUS_FINISH = "1";
@@ -61,14 +65,14 @@ public class Constants {
     /**
      * 押运人员RFID编码前缀
      */
-//	public static final String PRE_RFID_GUARD = "001aa";
-//	public static final String PRE_RFID_GUARD = "BBB2015";
+    //	public static final String PRE_RFID_GUARD = "001aa";
+    //	public static final String PRE_RFID_GUARD = "BBB2015";
     public static final String PRE_RFID_GUARD = "BBB2016";
     /**
      * 网点人员RFID编码前缀
      */
-//	public static final String PRE_RFID_BANKEMPLOYEE = "001bb";
-//	public static final String PRE_RFID_BANKEMPLOYEE = "AAA2007";
+    //	public static final String PRE_RFID_BANKEMPLOYEE = "001bb";
+    //	public static final String PRE_RFID_BANKEMPLOYEE = "AAA2007";
     public static final String PRE_RFID_BANKEMPLOYEE = "AAA2008";
 
 
@@ -83,7 +87,7 @@ public class Constants {
     public static final String NET_COMMIT_STATUS_RIGHT = "0";
     public static final String NET_COMMIT_STATUS_ERROR = "1";
 
-    void test(){
+    void test() {
 
     }
 

@@ -164,8 +164,11 @@
     <string name="net_button_in">网点入库</string>
     <string name="net_button_out">网点出库</string>
     <string name="net_title">功能选择</string>
+    <string name="peixiang">二维码</string>
+    <string name="scan">扫描</string>
     <string name="scan_tips">将二维码图片对准扫描框即可自动扫描</string>
     <string name="sdcard_unfound">未找到存储卡，无法存储照片！</string>
+    <string name="stop">停止</string>
     <style name="CustomCheckboxTheme" parent="@android:style/Widget.CompoundButton.CheckBox">
 		<item name="android:button">@drawable/checkselect_draw_bg</item>
 	</style>

@@ -3123,8 +3123,46 @@
                     "startLine": 166,
                     "startColumn": 4,
                     "startOffset": 8799,
+                    "endColumn": 40,
+                    "endOffset": 8835
+                },
+                "from": {
+                    "file": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\values\\strings.xml",
+                    "position": {
+                        "startLine": 48,
+                        "startColumn": 4,
+                        "startOffset": 1955,
+                        "endColumn": 40,
+                        "endOffset": 1991
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 167,
+                    "startColumn": 4,
+                    "startOffset": 8840,
+                    "endColumn": 35,
+                    "endOffset": 8871
+                },
+                "from": {
+                    "file": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\values\\strings.xml",
+                    "position": {
+                        "startLine": 47,
+                        "startColumn": 4,
+                        "startOffset": 1919,
+                        "endColumn": 35,
+                        "endOffset": 1950
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 168,
+                    "startColumn": 4,
+                    "startOffset": 8876,
                     "endColumn": 55,
-                    "endOffset": 8850
+                    "endOffset": 8927
                 },
                 "from": {
                     "file": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\values\\strings.xml",
@@ -3139,11 +3177,11 @@
             },
             {
                 "to": {
-                    "startLine": 167,
+                    "startLine": 169,
                     "startColumn": 4,
-                    "startOffset": 8855,
+                    "startOffset": 8932,
                     "endColumn": 57,
-                    "endOffset": 8908
+                    "endOffset": 8985
                 },
                 "from": {
                     "file": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\values\\strings.xml",
@@ -3158,12 +3196,31 @@
             },
             {
                 "to": {
-                    "startLine": 168,
+                    "startLine": 170,
                     "startColumn": 4,
-                    "startOffset": 8913,
-                    "endLine": 170,
+                    "startOffset": 8990,
+                    "endColumn": 35,
+                    "endOffset": 9021
+                },
+                "from": {
+                    "file": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\values\\strings.xml",
+                    "position": {
+                        "startLine": 46,
+                        "startColumn": 4,
+                        "startOffset": 1883,
+                        "endColumn": 35,
+                        "endOffset": 1914
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 171,
+                    "startColumn": 4,
+                    "startOffset": 9026,
+                    "endLine": 173,
                     "endColumn": 9,
-                    "endOffset": 9079
+                    "endOffset": 9192
                 },
                 "from": {
                     "file": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\values\\styles.xml",
@@ -3179,12 +3236,12 @@
             },
             {
                 "to": {
-                    "startLine": 171,
+                    "startLine": 174,
                     "startColumn": 4,
-                    "startOffset": 9084,
-                    "endLine": 174,
+                    "startOffset": 9197,
+                    "endLine": 177,
                     "endColumn": 12,
-                    "endOffset": 9290
+                    "endOffset": 9403
                 },
                 "from": {
                     "file": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\values\\styles.xml",
@@ -3200,12 +3257,12 @@
             },
             {
                 "to": {
-                    "startLine": 175,
+                    "startLine": 178,
                     "startColumn": 4,
-                    "startOffset": 9295,
-                    "endLine": 178,
+                    "startOffset": 9408,
+                    "endLine": 181,
                     "endColumn": 12,
-                    "endOffset": 9510
+                    "endOffset": 9623
                 },
                 "from": {
                     "file": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\values\\styles.xml",
@@ -3221,12 +3278,12 @@
             },
             {
                 "to": {
-                    "startLine": 179,
+                    "startLine": 182,
                     "startColumn": 4,
-                    "startOffset": 9515,
-                    "endLine": 182,
+                    "startOffset": 9628,
+                    "endLine": 185,
                     "endColumn": 12,
-                    "endOffset": 9721
+                    "endOffset": 9834
                 },
                 "from": {
                     "file": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\values\\styles.xml",
@@ -3242,12 +3299,12 @@
             },
             {
                 "to": {
-                    "startLine": 183,
+                    "startLine": 186,
                     "startColumn": 4,
-                    "startOffset": 9726,
-                    "endLine": 186,
+                    "startOffset": 9839,
+                    "endLine": 189,
                     "endColumn": 12,
-                    "endOffset": 9934
+                    "endOffset": 10047
                 },
                 "from": {
                     "file": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\values\\styles.xml",
@@ -3263,12 +3320,12 @@
             },
             {
                 "to": {
-                    "startLine": 187,
+                    "startLine": 190,
                     "startColumn": 4,
-                    "startOffset": 9939,
-                    "endLine": 190,
+                    "startOffset": 10052,
+                    "endLine": 193,
                     "endColumn": 12,
-                    "endOffset": 10145
+                    "endOffset": 10258
                 },
                 "from": {
                     "file": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\values\\styles.xml",
@@ -3284,12 +3341,12 @@
             },
             {
                 "to": {
-                    "startLine": 191,
+                    "startLine": 194,
                     "startColumn": 4,
-                    "startOffset": 10150,
-                    "endLine": 194,
+                    "startOffset": 10263,
+                    "endLine": 197,
                     "endColumn": 12,
-                    "endOffset": 10358
+                    "endOffset": 10471
                 },
                 "from": {
                     "file": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\values\\styles.xml",

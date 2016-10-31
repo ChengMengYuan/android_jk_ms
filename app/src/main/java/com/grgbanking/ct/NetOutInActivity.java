@@ -17,6 +17,7 @@ import com.grgbanking.ct.cach.DataCach;
 import com.grgbanking.ct.database.CashBox;
 import com.grgbanking.ct.database.ConvoyMan;
 import com.grgbanking.ct.database.DBManager;
+import com.grgbanking.ct.database.LoginMan;
 import com.grgbanking.ct.database.NetInfo;
 import com.grgbanking.ct.database.NetMan;
 import com.grgbanking.ct.entity.ConvoyManInfo;
@@ -187,6 +188,8 @@ public class NetOutInActivity extends Activity {
                             DBManager loginDb = new DBManager(context);
                             loginDb.addLoginMan(loginInfos);
                         }
+
+
                         //保存所有款箱
                         List<PdaCashboxInfo> pdaCashboxInfoList = pdaLoginMsg.getPdaCashboxInfo();
                         if (pdaCashboxInfoList != null && pdaCashboxInfoList.size() > 0) {
@@ -195,11 +198,12 @@ public class NetOutInActivity extends Activity {
                                 cashBox.setBankId(info.getBankId());
                                 cashBox.setBoxSn(info.getBoxSn());
                                 cashBox.setRfidNum(info.getRfidNum());
+                                Log.i("======RFID:========",info.getRfidNum());
                                 cashBoxes.add(cashBox);
                             }
-                            //存入数据库
-                            DBManager cashBoxDB = new DBManager(context);
-                            cashBoxDB.addCashBox(cashBoxes);
+//                            //存入数据库
+//                            DBManager cashBoxDB = new DBManager(context);
+//                            cashBoxDB.addCashBox(cashBoxes);
                         }
                     }
                 }
@@ -221,7 +225,7 @@ public class NetOutInActivity extends Activity {
                 // TODO: 2016/10/27  访问数据库组装数据
                 //访问数据库
                 DBManager db = new DBManager(context);
-                PdaLoginMessage pdaLoginMessage = new PdaLoginMessage();
+                PdaLoginMsg pdaLoginMsg = new PdaLoginMsg();
                 //取出 押运人员
                 ArrayList<ConvoyMan> manList = (ArrayList<ConvoyMan>) db.queryConvoyMan();
                 List<PdaGuardManInfo> pdaGuarManInfoList = new ArrayList<PdaGuardManInfo>();
@@ -234,7 +238,7 @@ public class NetOutInActivity extends Activity {
                         manInfo.setGuardManRFID(cMan.getGuardManRFID());
                         pdaGuarManInfoList.add(manInfo);
                     }
-                    pdaLoginMessage.setGuardManInfoList(pdaGuarManInfoList);
+                    pdaLoginMsg.setPdaGuardManInfo(pdaGuarManInfoList);
                 }
                 //取出网点人员
                 List<NetMan> netMen = db.queryNetMan();
@@ -248,9 +252,21 @@ public class NetOutInActivity extends Activity {
                         pdaNetPersonInfoList.add(pdaNetPersonInfo);
                     }
                 }
+                //取出所有款箱
+                List<CashBox> cashBoxes = db.queryCashBox();
+                List<PdaCashboxInfo> pdaCashboxInfoList = new ArrayList<PdaCashboxInfo>();
+                if (cashBoxes!=null&&cashBoxes.size()>0){
+                    for (CashBox info : cashBoxes){
+                        PdaCashboxInfo pdaCashboxInfo = new PdaCashboxInfo();
+                        pdaCashboxInfo.setBankId(info.getBankId());
+                        pdaCashboxInfo.setBoxSn(info.getBoxSn());
+                        pdaCashboxInfo.setRfidNum(info.getRfidNum());
+                        pdaCashboxInfoList.add(pdaCashboxInfo);
+                    }
+                }
 
                 //取出网点信息
-                ArrayList<NetInfo> netInfo = (ArrayList<NetInfo>) db.queryNetInfo();
+                List<NetInfo> netInfo = db.queryNetInfo();
                 List<PdaNetInfo> pdaNetInfoList = new ArrayList<PdaNetInfo>();
                 //存入pdaLoginMessage
                 if (netInfo != null && netInfo.size() > 0) {
@@ -259,37 +275,67 @@ public class NetOutInActivity extends Activity {
                         pdaNetInfo.setBankId(info.getBankId());
                         pdaNetInfo.setNetTaskStatus(info.getNetTaskStatus());
                         pdaNetInfo.setBankName(info.getBankName());
-                        //                        pdaNetInfo.setCashBoxInfoList();
+                        pdaNetInfo.setCashBoxInfoList(pdaCashboxInfoList);
                         pdaNetInfo.setNetPersonInfoList(pdaNetPersonInfoList);
                         pdaNetInfoList.add(pdaNetInfo);
                     }
                 }
-                pdaLoginMessage.setNetInfoList(pdaNetInfoList);
+                pdaLoginMsg.setNetInfoList(pdaNetInfoList);
 
 
-                //访问后台服务器进行登录操作
-                new HttpPostUtils(Constants.URL_NET_OUTIN, params, new UICallBackDao() {
-                    @Override
-                    public void callBack(ResultInfo resultInfo) {
-                        if (!ResultInfo.CODE_SUCCESS.equals(resultInfo.getCode())) {
-                            Toast.makeText(context, resultInfo.getMessage(), Toast.LENGTH_SHORT).show();
-                            hideWaitDialog();
-                            return;
-                        }
+                // TODO: 2016/10/28  取出登录人员
 
-                        JSONObject jsonObject = resultInfo.getJsonObject();
-                        PdaLoginMessage pdaLoginMessage = PdaLoginMessage.JSONtoPdaLoginMessage(jsonObject);
-                        DataCach.setPdaLoginMessage(pdaLoginMessage);
-                        DataCach.netType = Constants.NET_COMMIT_TYPE_IN;
-
-                        hideWaitDialog();
-
-                        Intent intent = new Intent();
-                        intent.setClass(NetOutInActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
+                List<LoginMan> loginMan = db.queryLoginMan();
+                List<PdaLoginManInfo> pdaLoginManInfoList = new ArrayList<PdaLoginManInfo>();
+                if (loginMan!=null&&loginMan.size()>0){
+                    for (LoginMan info : loginMan){
+                        PdaLoginManInfo pdaLoginManInfo = new PdaLoginManInfo();
+                        pdaLoginManInfo.setLogin_name(info.getLogin_name());
+                        pdaLoginManInfo.setLoginId(info.getLoginId());
+                        pdaLoginManInfo.setPassword(info.getPassword());
+                        pdaLoginManInfo.setLine(info.getLine());
+                        pdaLoginManInfo.setFlag(info.getFlag());
+                        pdaLoginManInfoList.add(pdaLoginManInfo);
                     }
-                }).execute();
+                    pdaLoginMsg.setPdaLoginManInfo(pdaLoginManInfoList);
+                }
+
+                // TODO: 2016/10/31 传递 pdaLoginMsg
+                hideWaitDialog();
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("Parcelable",pdaLoginMsg);
+                intent.putExtras(bundle);
+                intent.setClass(NetOutInActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+
+                //
+
+
+//                //访问后台服务器进行登录操作
+//                new HttpPostUtils(Constants.URL_NET_OUTIN, params, new UICallBackDao() {
+//                    @Override
+//                    public void callBack(ResultInfo resultInfo) {
+//                        if (!ResultInfo.CODE_SUCCESS.equals(resultInfo.getCode())) {
+//                            Toast.makeText(context, resultInfo.getMessage(), Toast.LENGTH_SHORT).show();
+//                            hideWaitDialog();
+//                            return;
+//                        }
+//
+//                        JSONObject jsonObject = resultInfo.getJsonObject();
+//                        PdaLoginMessage pdaLoginMessage = PdaLoginMessage.JSONtoPdaLoginMessage(jsonObject);
+//                        DataCach.setPdaLoginMessage(pdaLoginMessage);
+//                        DataCach.netType = Constants.NET_COMMIT_TYPE_IN;
+//
+//                        hideWaitDialog();
+//
+//                        Intent intent = new Intent();
+//                        intent.setClass(NetOutInActivity.this, MainActivity.class);
+//                        startActivity(intent);
+//                        finish();
+//                    }
+//                }).execute();
             }
         }
 

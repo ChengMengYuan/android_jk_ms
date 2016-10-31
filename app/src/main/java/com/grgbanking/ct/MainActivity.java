@@ -74,6 +74,14 @@ public class MainActivity extends Activity {
 //		saomiaoImageView.setOnClickListener(saomiaoButtonclick);
         mainBackButton = (Button) findViewById(R.id.main_btn_back);
 
+        String netType = DataCach.netType;
+
+        if (netType.equals(Constants.NET_COMMIT_TYPE_IN)) {
+            mainTitle.setText("网点入库任务列表");
+        } else {
+            mainTitle.setText("网点出库任务列表");
+        }
+
         // 生成动态数组，加入数据
         listItem = new ArrayList<HashMap<String, Object>>();
         // 生成适配器的Item和动态数组对应的元素
@@ -89,12 +97,7 @@ public class MainActivity extends Activity {
 //		params.add(new BasicNameValuePair("userId", userId));
         showWaitDialog("正在加载中...");
 
-        String netType = DataCach.netType;
-        if (netType.equals(Constants.NET_COMMIT_TYPE_IN)) {
-            mainTitle.setText("网点入库任务列表");
-        } else {
-            mainTitle.setText("网点出库任务列表");
-        }
+
 
         loadLoginMessageCach();
 

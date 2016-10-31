@@ -26,12 +26,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.grgbanking.ct.cach.DataCach;
+import com.grgbanking.ct.database.DBManager;
 import com.grgbanking.ct.database.Person;
 import com.grgbanking.ct.entity.LoginUser;
 import com.grgbanking.ct.http.HttpPostUtils;
 import com.grgbanking.ct.http.ResultInfo;
 import com.grgbanking.ct.http.UICallBackDao;
 import com.grgbanking.ct.update.CheckUpdateInfos;
+import com.grgbanking.ct.utils.IntenetUtil;
 import com.grgbanking.ct.utils.StringTools;
 
 import org.apache.http.NameValuePair;
@@ -41,17 +43,24 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.grgbanking.ct.utils.IntenetUtil.NETWORN_NONE;
+import static com.grgbanking.ct.utils.IntenetUtil.NETWORN_WIFI;
+
 public class LoginActivity extends Activity {
+    private static String TAG = "LoginActivity";
 
     private Button loginButtonView;
     private EditText loginNameView;
     private EditText passwordView;
     private CheckBox remPasswordView;
 
+    String flag;//登录的状态
     String loginNameViewValue = null; //UI控件内容
     String passwordViewValue = null;//UI控件内容
+    List<NameValuePair> params = new ArrayList<NameValuePair>();
     String userId = null; //登录成功后的用户ID
     String userName = null;//登录成功后的用户姓名
+    int network;//网络连接状态
     private Context context;
     private Person person;
     TextView detail_branch_name;
@@ -71,21 +80,8 @@ public class LoginActivity extends Activity {
         findViewById();
         initCach();
 
-        //		/** 检测是否要更新  */
-        //		checkUpdate();
-        //
-        //		判断是否记住密码，如果有记住用户名密码，将自动将用户名密码控件内容自动填充
-        //        person= PersonTableHelper.queryEntity(this);
-        //        if(person==null){
-        //        	person=new Person();
-        //        }
-        //        if("1".equals(person.getSelected())){
-        //        	remPasswordView.setChecked(true);
-        //        	loginNameView.setText(person.getLogin_name());
-        //        	passwordView.setText(person.getPassword());
-        //        }
 
-
+        //登录操作
         loginButtonView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,41 +97,110 @@ public class LoginActivity extends Activity {
                 loginButtonView.setText("正在登录中...");
                 loginButtonView.setEnabled(false);
 
-                List<NameValuePair> params = new ArrayList<NameValuePair>();
+
                 //            	params.add(new BasicNameValuePair("loginName",loginNameViewValue));
                 //            	params.add(new BasicNameValuePair("password",passwordViewValue));
                 params.add(new BasicNameValuePair("login_name", loginNameViewValue));
                 params.add(new BasicNameValuePair("login_password", passwordViewValue));
 
-                //访问后台服务器进行登录操作
-                new HttpPostUtils(Constants.URL_PDA_LOGIN, params, new UICallBackDao() {
 
-                    @Override
-                    public void callBack(ResultInfo resultInfo) {
-                        if (resultInfo.getCode() != null && !resultInfo.getCode().isEmpty()) {
-                            success();
-                            if (ResultInfo.CODE_GUARDMANIINFO.equals(resultInfo.getCode())) {
-                                Intent intent = new Intent();
-                                intent.setClass(LoginActivity.this, NetOutInActivity.class);
+                // TODO: 2016/10/31 判断是否已经连接网络
+                network = IntenetUtil.getNetworkState(context);
+                switch (network) {
+                    case NETWORN_NONE: {
+                        databaseLogin();
 
-                                startActivity(intent);
-                                finish();
-                            }
-                            if (ResultInfo.CODE_PEIXIANG.equals(resultInfo.getCode())) {
-                                success();
-                                Intent intent = new Intent();
-                                intent.setClass(LoginActivity.this, PeixiangActivity.class);
-
-                                startActivity(intent);
-                                finish();
-                            }
-                        } else {
-                            Toast.makeText(context, resultInfo.getMessage(), Toast.LENGTH_SHORT);
-                        }
+                        break;
                     }
-                }).execute();
+                    case NETWORN_WIFI: {
+                        //		/** 检测是否要更新  */
+                        //		checkUpdate();
+                        //
+                        //		判断是否记住密码，如果有记住用户名密码，将自动将用户名密码控件内容自动填充
+                        //        person= PersonTableHelper.queryEntity(this);
+                        //        if(person==null){
+                        //        	person=new Person();
+                        //        }
+                        //        if("1".equals(person.getSelected())){
+                        //        	remPasswordView.setChecked(true);
+                        //        	loginNameView.setText(person.getLogin_name());
+                        //        	passwordView.setText(person.getPassword());
+                        //        }
+
+                        wifiLogin();
+                        break;
+                    }
+                }
+
+
             }
         });
+    }
+
+    /**
+     * 无网络连接的情况下，访问数据库进行登录操作
+     */
+    private void databaseLogin() {
+        //访问数据库进行操作
+        DBManager db = new DBManager(context);
+        flag = db.queryLogin(loginNameViewValue, passwordViewValue);
+        //押运人员
+        if (flag.equals(ResultInfo.CODE_GUARDMANIINFO)) {
+            success();
+            Intent intent = new Intent();
+            intent.setClass(LoginActivity.this, NetOutInActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        //配箱人员
+        else if (flag.equals(ResultInfo.CODE_PEIXIANG)) {
+            success();
+            Intent intent = new Intent();
+            intent.setClass(LoginActivity.this, PeixiangActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            //帐号密码错误
+            Toast.makeText(context, "帐号密码有误,请重新输入", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * 使用wifi连接的情况下，访问后台服务器进行登录操作
+     */
+    private void wifiLogin() {
+        //访问后台服务器进行登录操作
+        new HttpPostUtils(Constants.URL_PDA_LOGIN, params, new UICallBackDao() {
+            @Override
+            public void callBack(ResultInfo resultInfo) {
+                Log.i(TAG, "use wifi to logining");
+                if (resultInfo.getCode() != null && !resultInfo.getCode().isEmpty()) {
+                    //押运人员
+                    if (ResultInfo.CODE_GUARDMANIINFO.equals(resultInfo.getCode())) {
+                        success();
+                        Intent intent = new Intent();
+                        intent.setClass(LoginActivity.this, NetOutInActivity.class);
+                        startActivity(intent);
+                        finish();
+                        //配箱人员
+                    } else if (ResultInfo.CODE_PEIXIANG.equals(resultInfo.getCode())) {
+                        success();
+                        Intent intent = new Intent();
+                        intent.setClass(LoginActivity.this, PeixiangActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                    //帐号密码错误
+                    else {
+                        Toast.makeText(context, resultInfo.getMessage(), Toast.LENGTH_SHORT).show();
+                        loginButtonView.setText("登录");
+                    }
+                } else {
+                    Toast.makeText(context, resultInfo.getMessage(), Toast.LENGTH_SHORT).show();
+                    loginButtonView.setText("登录");
+                }
+            }
+        }).execute();
     }
 
     /*
@@ -317,6 +382,6 @@ public class LoginActivity extends Activity {
         loginUser.setPassword(passwordViewValue);
         loginButtonView.setText("登录");
         loginButtonView.setEnabled(true);
-
+        Toast.makeText(context, "登录成功", Toast.LENGTH_SHORT).show();
     }
 }

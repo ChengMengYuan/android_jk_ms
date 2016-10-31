@@ -172,7 +172,7 @@ public final class R {
     }
     public static final class id {
         public static final int Button01=0x7f08001d;
-        public static final int ListView01=0x7f08002c;
+        public static final int ListView01=0x7f080030;
         public static final int ListView_boxs=0x7f080024;
         public static final int RelativeLayout01=0x7f080031;
         public static final int RelativeLayout_boxes=0x7f080016;
@@ -210,9 +210,9 @@ public final class R {
         public static final int list_title=0x7f080033;
         public static final int list_worktime=0x7f080035;
         public static final int login_button=0x7f08002a;
-        public static final int main_bar=0x7f08002d;
-        public static final int main_btn_back=0x7f080030;
-        public static final int main_title_view=0x7f08002e;
+        public static final int main_bar=0x7f08002c;
+        public static final int main_btn_back=0x7f08002f;
+        public static final int main_title_view=0x7f08002d;
         public static final int miniTwitter_logo=0x7f080029;
         public static final int net_out_button=0x7f08003b;
         public static final int net_sysout_view=0x7f080036;
@@ -228,7 +228,7 @@ public final class R {
         public static final int peixiangdetail_tv_name=0x7f080038;
         public static final int peixiangdetail_tv_num=0x7f080037;
         public static final int peixiangdetail_tv_number=0x7f080042;
-        public static final int popupmenu_btn=0x7f08002f;
+        public static final int popupmenu_btn=0x7f08002e;
         public static final int progress=0x7f080045;
         public static final int qcode_bt_scan=0x7f080047;
         public static final int qcode_bt_stop=0x7f080049;

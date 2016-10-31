@@ -1,5 +1,8 @@
 package com.grgbanking.ct.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,7 +18,7 @@ import java.util.Map;
  * @Description :
  */
 
-public class PdaLoginMsg extends PdaLoginManInfo implements Serializable {
+public class PdaLoginMsg extends PdaLoginManInfo implements Serializable,Parcelable {
 
     private String lineId;
     private String lineSn;
@@ -165,6 +168,15 @@ public class PdaLoginMsg extends PdaLoginManInfo implements Serializable {
 
         }
         return plm;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
 
     }
 }

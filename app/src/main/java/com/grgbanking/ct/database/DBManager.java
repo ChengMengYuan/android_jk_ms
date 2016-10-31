@@ -282,7 +282,7 @@ public class DBManager {
     public List<CashBox> queryCashBox() {
         SQLiteDatabase db = helper.getReadableDatabase();
         ArrayList<CashBox> boxList = new ArrayList<CashBox>();
-        Cursor c = db.rawQuery("SELECT * FROM CashBox", null);
+        Cursor c = db.rawQuery("SELECT * FROM PdaCashboxInfo", null);
         c.moveToFirst();
         if (c != null) {
             if (c.moveToFirst()) {
@@ -358,6 +358,27 @@ public class DBManager {
         }
 
         return netTasks;
+    }
+
+    public String queryLogin(String loginName, String password) {
+        String flag = "";
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT flag FROM LoginMan where loginName=? and password=? ", new String[]{loginName,password});
+        c.moveToFirst();
+        if (c != null) {
+            if (c.moveToFirst()) {
+                do {
+                    flag = c.getString(0);
+                    android.util.Log.i("=======flag========",flag);
+                } while (c.moveToNext());
+            }
+        }
+        return  flag;
+//        Cursor cursor = db.query(true, DBHelper.TABLE_LoginMan_NAME, new String[]{"_id, name, age"},
+//                "name like ?", new String[]{"乔%"},
+//                null, null,
+//                "_id desc", "5, 10");
+//        cursor.close();
     }
 
 

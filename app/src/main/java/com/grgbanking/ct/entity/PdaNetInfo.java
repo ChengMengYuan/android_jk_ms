@@ -1,15 +1,17 @@
 package com.grgbanking.ct.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 
-public class PdaNetInfo {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PdaNetInfo implements Serializable {
 	private String bankId;
 	private String bankName;
 	private String netTaskStatus;
+	private String lineId;
 	private List<PdaCashboxInfo> cashBoxInfoList;
 	private List<PdaNetPersonInfo> netPersonInfoList;
 
@@ -71,5 +73,13 @@ public class PdaNetInfo {
 		}
 		
 		return list;
+	}
+
+	public String getLineId() {
+		return lineId;
+	}
+
+	public void setLineId(String lineId) {
+		this.lineId = lineId;
 	}
 }

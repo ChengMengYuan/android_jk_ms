@@ -3,6 +3,7 @@ package com.grgbanking.ct.entity;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * @Description :
  */
 
-public class PdaLoginManInfo {
+public class PdaLoginManInfo implements Serializable {
     private String loginId;
     private String login_name;
     private String password;

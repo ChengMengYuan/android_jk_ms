@@ -3,12 +3,13 @@ package com.grgbanking.ct.entity;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PdaCashboxInfo {
+public class PdaCashboxInfo implements Serializable {
     private String rfidNum;
     private String boxSn;
     private String bankId;
@@ -68,7 +69,7 @@ public class PdaCashboxInfo {
                 try {
                     map.put((String) jsonArray.getJSONObject(i).get("rfidNum"),
                             (String) jsonArray.getJSONObject(i).get("boxSn")
-                                    + "|" +
+                                    + "&" +
                                     jsonArray.getJSONObject(i).get("bankId"));
 
                 } catch (JSONException e) {

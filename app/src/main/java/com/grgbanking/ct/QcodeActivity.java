@@ -3,17 +3,22 @@ package com.grgbanking.ct;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.os.Handler;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.SimpleAdapter;
+import android.widget.Toast;
+
+import com.grgbanking.ct.rfid.UfhData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static com.grgbanking.ct.rfid.UfhData.timer;
 
 /**
  * @author ：     cmy
@@ -24,10 +29,17 @@ import java.util.List;
 
 public class QcodeActivity extends Activity {
 
+    private Context context;
+
     private Button BT_scan;
     private Button BT_stop;
     private ListView LV_RFID;
     private List<HashMap<String, Object>> mData;
+
+    private Handler mHandler;
+    private boolean Scanflag = false;
+    private boolean isCanceled = true;
+    private static final int MSG_UPDATE_LISTVIEW = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +48,13 @@ public class QcodeActivity extends Activity {
         findViewById();
         onClickListener();
         mData = getData();//为刚才的变量赋值
-        MyAdapter listadapter = new MyAdapter(this);//创建一个适配器
-        LV_RFID.setAdapter(listadapter);//为ListView控件绑定适配器
+        SimpleAdapter simpleAdapter = new SimpleAdapter(this,
+                getData(),
+                R.layout.qcode_list,
+                new String[]{"RFID", "Button", "code"},
+                new int[]{R.id.qcode_list_tv, R.id.qcode_list_bt, R.id.list_qcdoe});
+        LV_RFID.setAdapter(simpleAdapter);
+
     }
 
 
@@ -45,7 +62,46 @@ public class QcodeActivity extends Activity {
         BT_scan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //连接设备
+                int result = UfhData.UhfGetData.OpenUhf(57600, (byte)0xff, 4, 1, null);
+                if (result == 0) {
+                    UfhData.UhfGetData.GetUhfInfo();
+                    Toast.makeText(context, "连接设备成功", Toast.LENGTH_LONG).show();
+                    //		mHandler.removeMessages(MSG_SHOW_PROPERTIES);
+                    //		mHandler.sendEmptyMessage(MSG_SHOW_PROPERTIES);
+                } else {
+                    Toast.makeText(context, "连接设备失败，请关闭程序重新登录", Toast.LENGTH_LONG).show();
+                }
+
                 // TODO: 2016/10/25 扫描RFID
+                if (timer == null) {
+                    //声音开关初始化
+                    UfhData.Set_sound(true);
+                    UfhData.SoundFlag = false;
+
+                    timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            if (Scanflag)
+                                return;
+                            Scanflag = true;
+                            UfhData.read6c();
+                            mHandler.removeMessages(MSG_UPDATE_LISTVIEW);
+                            mHandler.sendEmptyMessage(MSG_UPDATE_LISTVIEW);
+                            Scanflag = false;
+                        }
+                    }, 0, 10);
+                } else {
+                    isCanceled = true;
+                    mHandler.removeMessages(MSG_UPDATE_LISTVIEW);
+                    if (timer != null) {
+                        timer.cancel();
+                        timer = null;
+                        UfhData.scanResult6c.clear();
+                    }
+                    UfhData.Set_sound(false);
+                }
             }
         });
 
@@ -78,83 +134,9 @@ public class QcodeActivity extends Activity {
             map.put("RFID", "123456");
             map.put("Button", "开始");
             map.put("code", "11111111111");
-            //            map.put("list", "haha");
             list.add(map);
         }
         return list;
     }
 
-    /**
-     * 自定义适配器
-     */
-    public class MyAdapter extends BaseAdapter {
-        private LayoutInflater mInflater;// 动态布局映射
-        private Context context;
-
-        public MyAdapter(Context context) {
-            this.mInflater = LayoutInflater.from(context);
-        }
-
-        // 决定ListView有几行可见
-        @Override
-        public int getCount() {
-            return mData.size();// ListView的条目数
-        }
-
-        @Override
-        public Object getItem(int arg0) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int arg0) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = mInflater.inflate(R.layout.qcode_list, null);//根据布局文件实例化view
-            TextView RFID = (TextView) convertView.findViewById(R.id.qcode_list_tv);//找某个控件
-            RFID.setText(mData.get(position).get("RFID").toString());//给该控件设置数据(数据从集合类中来)
-            Button start = (Button) convertView.findViewById(R.id.qcode_list_bt);//找某个控件
-            ListView list = (ListView) convertView.findViewById(R.id.qcode_list_item);//找某个控件
-            ItemAdapter itemadapter = new ItemAdapter(context);
-            list.setAdapter(itemadapter);
-            return convertView;
-        }
-    }
-
-    public class ItemAdapter extends BaseAdapter {
-        private LayoutInflater mInflater;
-        private Context mContext;
-
-        public ItemAdapter(Context context) {
-            super();
-            this.mInflater = LayoutInflater.from(context);
-            this.mContext = context;
-        }
-
-        @Override
-        public int getCount() {
-            return mData.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mData.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = mInflater.inflate(R.layout.peixiangdt_list_item, null);//根据布局文件实例化view
-            TextView CODE = (TextView) convertView.findViewById(R.id.code);
-            CODE.setText(mData.get(position).get("code").toString());
-            return convertView;
-        }
-    }
 }

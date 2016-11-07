@@ -4,11 +4,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.grgbanking.ct.entity.ConvoyManInfo;
 import com.grgbanking.ct.entity.LoginInfo;
 import com.grgbanking.ct.entity.PdaCashboxInfo;
 import com.grgbanking.ct.entity.PdaNetPersonInfo;
+import com.grgbanking.ct.scan.Recordnet;
+import com.grgbanking.ct.scan.Waternet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +27,6 @@ public class DBManager {
 
     public DBManager(Context context) {
         helper = new DBHelper(context, db);
-        //        //因为getWritableDatabase内部调用了mContext.openOrCreateDatabase(mName, 0, mFactory);
-        //        //所以要确保context已初始化,我们可以把实例化DBManager的步骤放在Activity的onCreate里
-        //        db = helper.getWritableDatabase();
     }
 
     /**
@@ -134,6 +134,8 @@ public class DBManager {
                 values.put("bankId", netInfo.getBankId());
                 values.put("bankName", netInfo.getBankName());
                 values.put("netTaskStatus", netInfo.getNetTaskStatus());
+                values.put("lineSn", netInfo.getLineSn());
+                values.put("lineId", netInfo.getLineId());
                 db.insert(DBHelper.TABLE_PdaNetInfo_NAME, null, values);
                 db.close();
                 //插入网点人员
@@ -196,6 +198,219 @@ public class DBManager {
 
 
     /**
+     * 添加到 recordnet表
+     *
+     * @param recordnet
+     */
+    public void addRecordnet(Recordnet recordnet) {
+        try {
+            ContentValues values = new ContentValues();
+            db = helper.getWritableDatabase();
+            values.put("lineSn", recordnet.getLineSn());
+            values.put("scanningDate", recordnet.getScanningDate());
+            values.put("bankman", recordnet.getBankman());
+            values.put("guardman", recordnet.getGuardman());
+            values.put("lineType", recordnet.getLineType());
+            values.put("scanStatus", recordnet.getScanStatus());
+            values.put("note", recordnet.getNote());
+            values.put("bankId", recordnet.getBankId());
+            values.put("bankmanId", recordnet.getBankmanId());
+            values.put("guardmanId", recordnet.getGuardmanId());
+            values.put("lineId", recordnet.getLineId());
+            db.insert(DBHelper.TABLE_RECORDNET_NAME, null, values);
+            db.close();
+        } finally {
+
+        }
+    }
+
+
+    /**
+     * 添加Waternet表
+     *
+     * @param waternet
+     */
+    public void addWaternet(Waternet waternet) {
+        try {
+            ContentValues values = new ContentValues();
+            db = helper.getWritableDatabase();
+            values.put("scanningNetid", waternet.getScanningNetid());
+            values.put("boxSn", waternet.getBoxSn());
+            values.put("boxId", waternet.getBoxId());
+            values.put("bankId", waternet.getBankId());
+            values.put("scanningDate", waternet.getScanningDate());
+            values.put("status", waternet.getStatus());
+            values.put("ScanningType", waternet.getScanningType());
+            db.insert(DBHelper.TABLE_WATERNET_NAME, null, values);
+            db.close();
+        } finally {
+
+        }
+    }
+
+    public void addExtract(Extract extract) {
+        try {
+            ContentValues values = new ContentValues();
+            db = helper.getWritableDatabase();
+            values.put("bankId", extract.getBankId());
+            values.put("bankName", extract.getBankName());
+            values.put("netTaskStatus", extract.getNetTaskStatus());
+            values.put("lineSn", extract.getLineSn());
+            values.put("lineId", extract.getLineId());
+            db.insert(DBHelper.TABLE_EXTRACT_NAME, null, values);
+            db.close();
+        } finally {
+
+        }
+    }
+
+    /**
+     * 添加到 ExtractBoxs表
+     *
+     * @param extractBoxs
+     */
+    public void addExtractBoxs(ExtractBoxs extractBoxs) {
+        try {
+            ContentValues values = new ContentValues();
+            db = helper.getWritableDatabase();
+            values.put("rfidNum", extractBoxs.getRfidNum());
+            values.put("bankId", extractBoxs.getBankId());
+            values.put("boxSn", extractBoxs.getBoxSn());
+            db.insert(DBHelper.TABLE_EXTRACTBOXS_NAME, null, values);
+            db.close();
+        } finally {
+
+        }
+    }
+
+    /**
+     * 查询 Extract
+     */
+    public List<Extract> queryExtract() {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ArrayList<Extract> extractList = new ArrayList<Extract>();
+        Cursor c = db.rawQuery("SELECT * FROM Extract", null);
+        c.moveToFirst();
+        if (c != null) {
+            if (c.moveToFirst()) {
+                do {
+                    Extract extract = new Extract();
+                    extract.setBankId(c.getString(0));
+                    extract.setBankName(c.getString(1));
+                    extract.setNetTaskStatus(c.getString(2));
+                    extract.setLineSn(c.getString(3));
+                    extract.setLineId(c.getString(4));
+                    extractList.add(extract);
+                } while (c.moveToNext());
+            }
+        }
+        return extractList;
+    }
+
+    /**
+     * 查询 ExtractBoxs
+     */
+
+    public List<ExtractBoxs> queryExtractBoxs() {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ArrayList<ExtractBoxs> ExtractBoxsList = new ArrayList<ExtractBoxs>();
+        Cursor c = db.rawQuery("SELECT * FROM ExtractBoxs", null);
+        c.moveToFirst();
+        if (c != null) {
+            if (c.moveToFirst()) {
+                do {
+                    ExtractBoxs boxs = new ExtractBoxs();
+                    boxs.setRfidNum(c.getString(0));
+                    boxs.setBankId(c.getString(1));
+                    boxs.setBoxSn(c.getString(2));
+                    ExtractBoxsList.add(boxs);
+                } while (c.moveToNext());
+            }
+        }
+
+        return ExtractBoxsList;
+    }
+
+    /**
+     * 查询 recordnet表
+     */
+    public List<Recordnet> queryRecordnet() {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ArrayList<Recordnet> recordnetArrayList = new ArrayList<Recordnet>();
+        Cursor c = db.rawQuery("SELECT * FROM Recordnet", null);
+        c.moveToFirst();
+        if (c != null) {
+            if (c.moveToFirst()) {
+                do {
+                    Recordnet r = new Recordnet();
+                    int id = c.getInt(0);
+                    String lineSn = c.getString(1);
+                    String scanningDate = c.getString(2);
+                    String bankman = c.getString(3);
+                    String guardman = c.getString(4);
+                    String lineType = c.getString(5);
+                    String scanStatus = c.getString(6);
+                    String note = c.getString(7);
+                    String bankId = c.getString(8);
+                    String bankmanId = c.getString(9);
+                    String guardmanId = c.getString(10);
+                    String lineId = c.getString(11);
+                    r.setId(id);
+                    r.setLineSn(lineSn);
+                    r.setScanningDate(scanningDate);
+                    r.setBankman(bankman);
+                    r.setGuardman(guardman);
+                    r.setLineType(lineType);
+                    r.setScanStatus(scanStatus);
+                    r.setNote(note);
+                    r.setBankId(bankId);
+                    r.setBankmanId(bankmanId);
+                    r.setGuardmanId(guardmanId);
+                    r.setLineId(lineId);
+                    recordnetArrayList.add(r);
+                } while (c.moveToNext());
+            }
+        }
+        return recordnetArrayList;
+    }
+
+    /**
+     * 查询 Waternet表
+     *
+     * @return
+     */
+    public List<Waternet> queryWaternet(int netId) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ArrayList<Waternet> waternetArrayList = new ArrayList<Waternet>();
+        Log.i("======", "===netId=" + netId);
+        Cursor c = db.rawQuery("SELECT * FROM Waternet  where scanningNetid=?  ", new String[]{String.valueOf(netId)});
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+            do {
+                Waternet w = new Waternet();
+                int id = c.getInt(0);
+                int ScanningNetid = c.getInt(1);
+                String ScanningDate = c.getString(2);
+                String BoxId = c.getString(3);
+                String BoxSn = c.getString(4);
+                String BankId = c.getString(5);
+                String Status = c.getString(6);
+                String ScanningType = c.getString(7);
+                w.setId(id);
+                w.setScanningNetid(ScanningNetid);
+                w.setBoxSn(BoxSn);
+                w.setBoxId(BoxId);
+                w.setBankId(BankId);
+                w.setScanningDate(ScanningDate);
+                w.setStatus(Status);
+                w.setScanningType(ScanningType);
+                waternetArrayList.add(w);
+            } while (c.moveToNext());
+        }
+        return waternetArrayList;
+    }
+
+    /**
      * 网点人员查询
      *
      * @return ConvoyMan list
@@ -205,15 +420,19 @@ public class DBManager {
         ArrayList<ConvoyMan> manList = new ArrayList<ConvoyMan>();
         Cursor c = db.rawQuery("SELECT * FROM ConvoyMan", null);
         c.moveToFirst();
-        while (c.moveToNext()) {
-            ConvoyMan cMan = new ConvoyMan();
-            String id = c.getString(0);
-            String name = c.getString(1);
-            String rfid = c.getString(2);
-            cMan.setGuardManId(id);
-            cMan.setGuardManName(name);
-            cMan.setGuardManRFID(rfid);
-            manList.add(cMan);
+        if (c != null) {
+            if (c.moveToFirst()) {
+                do {
+                    ConvoyMan cMan = new ConvoyMan();
+                    String id = c.getString(0);
+                    String name = c.getString(1);
+                    String rfid = c.getString(2);
+                    cMan.setGuardManId(id);
+                    cMan.setGuardManName(name);
+                    cMan.setGuardManRFID(rfid);
+                    manList.add(cMan);
+                } while (c.moveToNext());
+            }
         }
         return manList;
     }
@@ -228,21 +447,53 @@ public class DBManager {
         ArrayList<NetMan> manList = new ArrayList<NetMan>();
         Cursor c = db.rawQuery("SELECT * FROM NetMan", null);
         c.moveToFirst();
-        while (c.moveToNext()) {
-            NetMan nMan = new NetMan();
-            String NetPersonId = c.getString(0);
-            String bankId = c.getString(1);
-            String netPersonName = c.getString(2);
-            String netPersonRFID = c.getString(3);
-            nMan.setNetPersonId(NetPersonId);
-            nMan.setBankId(bankId);
-            nMan.setNetPersonName(netPersonName);
-            nMan.setNetPersonRFID(netPersonRFID);
-            manList.add(nMan);
+        if (c != null) {
+            if (c.moveToFirst()) {
+                do {
+                    NetMan nMan = new NetMan();
+                    String NetPersonId = c.getString(0);
+                    String bankId = c.getString(1);
+                    String netPersonName = c.getString(2);
+                    String netPersonRFID = c.getString(3);
+                    nMan.setNetPersonId(NetPersonId);
+                    nMan.setBankId(bankId);
+                    nMan.setNetPersonName(netPersonName);
+                    nMan.setNetPersonRFID(netPersonRFID);
+                    manList.add(nMan);
+                } while (c.moveToNext());
+            }
         }
         return manList;
     }
 
+    /**
+     * 根据网点号查询网点人员
+     *
+     * @return
+     */
+    public List<NetMan> queryNetManByBankId(String bankId) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        ArrayList<NetMan> manList = new ArrayList<NetMan>();
+        Cursor c = db.rawQuery("SELECT * FROM NetMan where bankId = ?", new String[]{bankId});
+        c.moveToFirst();
+        if (c != null) {
+            if (c.moveToFirst()) {
+                do {
+                    NetMan nMan = new NetMan();
+                    String NetPersonId = c.getString(0);
+//                    String bankId = c.getString(1);
+                    String netPersonName = c.getString(2);
+                    String netPersonRFID = c.getString(3);
+                    nMan.setNetPersonId(NetPersonId);
+                    nMan.setBankId(bankId);
+                    nMan.setNetPersonName(netPersonName);
+                    nMan.setNetPersonRFID(netPersonRFID);
+                    manList.add(nMan);
+                } while (c.moveToNext());
+            }
+        }
+        return manList;
+    }
     /**
      * 查询登录人员
      *
@@ -317,9 +568,13 @@ public class DBManager {
                     String bankId = c.getString(0);
                     String bankName = c.getString(1);
                     String netTaskStatus = c.getString(2);
+                    String lineSn = c.getString(3);
+                    String lineId = c.getString(4);
                     nf.setBankId(bankId);
                     nf.setBankName(bankName);
                     nf.setNetTaskStatus(netTaskStatus);
+                    nf.setLineSn(lineSn);
+                    nf.setLineId(lineId);
                     netInfos.add(nf);
                 } while (c.moveToNext());
             }
@@ -363,22 +618,42 @@ public class DBManager {
     public String queryLogin(String loginName, String password) {
         String flag = "";
         SQLiteDatabase db = helper.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT flag FROM LoginMan where loginName=? and password=? ", new String[]{loginName,password});
+        Cursor c = db.rawQuery("SELECT flag FROM LoginMan where loginName=? and password=? ", new String[]{loginName, password});
         c.moveToFirst();
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
                     flag = c.getString(0);
-                    android.util.Log.i("=======flag========",flag);
+                    android.util.Log.i("=======flag========", flag);
                 } while (c.moveToNext());
             }
         }
-        return  flag;
-//        Cursor cursor = db.query(true, DBHelper.TABLE_LoginMan_NAME, new String[]{"_id, name, age"},
-//                "name like ?", new String[]{"乔%"},
-//                null, null,
-//                "_id desc", "5, 10");
-//        cursor.close();
+        return flag;
+        //        Cursor cursor = db.query(true, DBHelper.TABLE_LoginMan_NAME, new String[]{"_id, name, age"},
+        //                "name like ?", new String[]{"乔%"},
+        //                null, null,
+        //                "_id desc", "5, 10");
+        //        cursor.close();
+    }
+
+    /**
+     * 查询流水表当前最大值
+     *
+     * @return ConvoyMan list
+     */
+    public int queryMaxRecordNet() {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        int maxId = 0;
+        Cursor c = db.rawQuery("select max(id) from Recordnet", null);
+        c.moveToFirst();
+        if (c != null) {
+            if (c.moveToFirst()) {
+                do {
+                    maxId = c.getInt(0);
+                } while (c.moveToNext());
+            }
+        }
+        return maxId;
     }
 
 
@@ -397,6 +672,10 @@ public class DBManager {
         db.delete(DBHelper.TABLE_PdaNetInfo_NAME, null, null);
         db.delete(DBHelper.TABLE_PdaCashboxInfo_NAME, null, null);
         db.delete(DBHelper.TABLE_LoginMan_NAME, null, null);
+        db.delete(DBHelper.TABLE_RECORDNET_NAME, null, null);
+        db.delete(DBHelper.TABLE_WATERNET_NAME, null, null);
+        db.delete(DBHelper.TABLE_EXTRACT_NAME, null, null);
+        db.delete(DBHelper.TABLE_EXTRACTBOXS_NAME, null, null);
         db.close();
         //        db.endTransaction();//结束事物
     }

@@ -3,6 +3,7 @@ package com.grgbanking.ct.database;
 import com.grgbanking.ct.entity.PdaCashboxInfo;
 import com.grgbanking.ct.entity.PdaNetPersonInfo;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,10 +13,12 @@ import java.util.List;
  * @Description :
  */
 
-public class NetInfo {
+public class NetInfo  implements Serializable {
     private String bankId;
     private String bankName;
     private String netTaskStatus;
+    private String lineSn;
+    private String lineId;
     private List<PdaCashboxInfo> cashBoxInfoList;
     private List<PdaNetPersonInfo> netPersonInfoList;
 
@@ -70,5 +73,21 @@ public class NetInfo {
 
     public void setCashBoxInfoList(List<PdaCashboxInfo> cashBoxInfoList) {
         this.cashBoxInfoList = cashBoxInfoList;
+    }
+
+    public String getLineSn() {
+        return lineSn;
+    }
+
+    public void setLineSn(String lineSn) {
+        this.lineSn = lineSn;
+    }
+
+    public String getLineId() {
+        return lineId;
+    }
+
+    public void setLineId(String lineId) {
+        this.lineId = lineId;
     }
 }

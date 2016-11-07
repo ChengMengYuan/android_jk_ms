@@ -8,13 +8,13 @@
         android:id="@+id/qcode_list_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="RFID:"
+        android:text="@string/rfid"
         android:textSize="30sp"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="二维码扫描"
+        android:text="@string/scan_qc"
         android:id="@+id/qcode_list_bt"/>
 
     <ListView

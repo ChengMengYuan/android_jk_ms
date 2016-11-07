@@ -104,7 +104,6 @@ public class LoginActivity extends Activity {
                 params.add(new BasicNameValuePair("login_password", passwordViewValue));
 
 
-                // TODO: 2016/10/31 判断是否已经连接网络
                 network = IntenetUtil.getNetworkState(context);
                 switch (network) {
                     case NETWORN_NONE: {
@@ -142,8 +141,14 @@ public class LoginActivity extends Activity {
      */
     private void databaseLogin() {
         //访问数据库进行操作
-        DBManager db = new DBManager(context);
-        flag = db.queryLogin(loginNameViewValue, passwordViewValue);
+        try {
+            DBManager db = new DBManager(context);
+            flag = db.queryLogin(loginNameViewValue, passwordViewValue);
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "帐号密码有误,请重新输入", Toast.LENGTH_SHORT).show();
+        }
+
         //押运人员
         if (flag.equals(ResultInfo.CODE_GUARDMANIINFO)) {
             success();

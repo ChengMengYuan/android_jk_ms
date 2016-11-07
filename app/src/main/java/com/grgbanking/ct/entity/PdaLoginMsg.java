@@ -1,7 +1,6 @@
 package com.grgbanking.ct.entity;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import com.grgbanking.ct.database.Extract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,7 +17,7 @@ import java.util.Map;
  * @Description :
  */
 
-public class PdaLoginMsg extends PdaLoginManInfo implements Serializable,Parcelable {
+public class PdaLoginMsg extends PdaLoginManInfo implements Serializable {
 
     private String lineId;
     private String lineSn;
@@ -28,6 +27,9 @@ public class PdaLoginMsg extends PdaLoginManInfo implements Serializable,Parcela
     private List<PdaNetInfo> netInfoList;
     private List<PdaGuardManInfo> pdaGuardManInfo;
     private List<PdaLoginManInfo> pdaLoginManInfo;
+    private Map<String, String> allPdaBoxsMap;
+    private List<PdaCashboxInfo> pdaCashboxInfo;
+    private List<Extract> extracts;
 
     public List<PdaCashboxInfo> getPdaCashboxInfo() {
         return pdaCashboxInfo;
@@ -36,9 +38,6 @@ public class PdaLoginMsg extends PdaLoginManInfo implements Serializable,Parcela
     public void setPdaCashboxInfo(List<PdaCashboxInfo> pdaCashboxInfo) {
         this.pdaCashboxInfo = pdaCashboxInfo;
     }
-
-    private List<PdaCashboxInfo> pdaCashboxInfo;
-    private Map<String, String> allPdaBoxsMap;
 
     public String getLineId() {
         return lineId;
@@ -144,13 +143,20 @@ public class PdaLoginMsg extends PdaLoginManInfo implements Serializable,Parcela
             plm.setPdaGuardManInfo(guardManInfoList);
 
 
-
             /**
-             * setAllPdaBoxsList
+             * set allPdaBoxsList
              */
             JSONArray allPdaBoxsArray = jsonObject.getJSONArray("allPdaBoxsList");
-            List<PdaCashboxInfo> cashboxInfoList = PdaCashboxInfo.JSONArraytoPdaNetInfo(allPdaBoxsArray);
-            plm.setPdaCashboxInfo(cashboxInfoList);
+            Map<String, String> allPdaBoxsMap = PdaCashboxInfo.JSONArraytoPdaNetInfoMap(allPdaBoxsArray);
+            plm.setAllPdaBoxsMap(allPdaBoxsMap);
+
+
+            //            /**
+            //             * setAllPdaBoxsList
+            //             */
+            //            JSONArray allPdaBoxsArray = jsonObject.getJSONArray("allPdaBoxsList");
+            //            List<PdaCashboxInfo> cashboxInfoList = PdaCashboxInfo.JSONArraytoPdaNetInfo(allPdaBoxsArray);
+            //            plm.setPdaCashboxInfo(cashboxInfoList);
 
             /**
              * setloginList
@@ -170,13 +176,11 @@ public class PdaLoginMsg extends PdaLoginManInfo implements Serializable,Parcela
         return plm;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public List<Extract> getExtracts() {
+        return extracts;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-
+    public void setExtracts(List<Extract> extracts) {
+        this.extracts = extracts;
     }
 }

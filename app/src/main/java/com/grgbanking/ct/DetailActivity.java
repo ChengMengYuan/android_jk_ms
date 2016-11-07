@@ -34,10 +34,13 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.LocationClientOption.LocationMode;
 import com.grgbanking.ct.cach.DataCach;
+import com.grgbanking.ct.database.DBManager;
+import com.grgbanking.ct.database.ExtractBoxs;
 import com.grgbanking.ct.database.Person;
 import com.grgbanking.ct.entity.PdaCashboxInfo;
 import com.grgbanking.ct.entity.PdaGuardManInfo;
 import com.grgbanking.ct.entity.PdaLoginMessage;
+import com.grgbanking.ct.entity.PdaLoginMsg;
 import com.grgbanking.ct.entity.PdaNetInfo;
 import com.grgbanking.ct.entity.PdaNetPersonInfo;
 import com.grgbanking.ct.http.FileLoadUtils;
@@ -46,6 +49,8 @@ import com.grgbanking.ct.http.ResultInfo;
 import com.grgbanking.ct.http.UICallBackDao;
 import com.grgbanking.ct.rfid.UfhData;
 import com.grgbanking.ct.rfid.UfhData.UhfGetData;
+import com.grgbanking.ct.scan.Recordnet;
+import com.grgbanking.ct.scan.Waternet;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -66,6 +71,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.grgbanking.ct.cach.DataCach.pdaLoginMsg;
+
 @SuppressLint("NewApi")
 public class DetailActivity extends Activity {
 
@@ -85,6 +92,7 @@ public class DetailActivity extends Activity {
     SimpleAdapter listItemAdapter;
     ArrayList<HashMap<String, Object>> listItem;
 
+
     private int tty_speed = 57600;
     private byte addr = (byte) 0xff;
 
@@ -96,7 +104,8 @@ public class DetailActivity extends Activity {
     private static final int MSG_UPDATE_LISTVIEW = 0;
     private Map<String, Integer> data;
     static HashMap<String, Object> boxesMap1 = null;//保存正确款箱map
-    static HashMap<String, Object> boxesMap2 = null;//保存错误款箱map
+    static HashMap<String, Object> boxesMap2 = null;//保存多处的款箱map
+    static HashMap<String, Object> boxesMap3 = null;//保存错误的款箱map
     static PdaNetPersonInfo netPersonInfo = null;//保存网点人员
     static PdaGuardManInfo guardManInfo = null;//保存押运人员
 
@@ -169,6 +178,7 @@ public class DetailActivity extends Activity {
         //		findViewById(R.id.add_photo).setOnClickListener(click);
     }
 
+
     private void flashInfo() {
         mHandler = new Handler() {
 
@@ -178,32 +188,24 @@ public class DetailActivity extends Activity {
                     return;
                 switch (msg.what) {
                     case MSG_UPDATE_LISTVIEW:
-                        //					if(mode.equals(MainActivity.TABLE_6B)){
-                        //						data = UfhData.scanResult6b;
-                        //					}else {
-                        //						data = UfhData.scanResult6c;
-                        //					}
+
                         data = UfhData.scanResult6c;
-                        //					if(listItemAdapter == null){
-                        //						myAdapter = new MyAdapter(ScanMode.this, new ArrayList(data.keySet()));
-                        //						listView.setAdapter(myAdapter);
-                        //					}else{
-                        //						myAdapter.mList = new ArrayList(data.keySet());
-                        //					}
                         String person1 = person1TextView.getText().toString();
                         String person2 = person2TextView.getText().toString();
-
                         Iterator it = data.keySet().iterator();
                         while (it.hasNext()) {
                             String key = (String) it.next();
-
+                            Log.i("==key==", "" + key);
                             //判断是否是押运人员
                             if (key.indexOf(Constants.PRE_RFID_GUARD) != -1) {
 
                                 if (person1.trim().equals("")) {
-                                    PdaLoginMessage plm = DataCach.getPdaLoginMessage();
+                                    PdaLoginMsg plm = DataCach.getPdaLoginMsg();
+                                    Log.i("========", "+++====" + plm);
+                                    //                                    PdaLoginMessage plm = DataCach.getPdaLoginMessage();
                                     if (plm != null) {
-                                        List<PdaGuardManInfo> guardManInfoList = plm.getGuardManInfoList();
+                                        List<PdaGuardManInfo> guardManInfoList = plm.getPdaGuardManInfo();
+                                        Log.i("========", "=+++++++=" + guardManInfoList.size());
                                         if (guardManInfoList != null && guardManInfoList.size() > 0) {
                                             for (PdaGuardManInfo info : guardManInfoList) {
                                                 if (info.getGuardManRFID().equals(key)) {
@@ -245,6 +247,7 @@ public class DetailActivity extends Activity {
                             }
                             //判断是否是正确款箱RFID
                             else if (boxesMap1.get(key) != null) {
+                                Log.i("======", "here======");
                                 HashMap<String, Object> map = DataCach.boxesMap.get(key);
                                 map.put("list_img", R.drawable.boxes_list_status_1);// 图像资源的ID
 
@@ -254,57 +257,61 @@ public class DetailActivity extends Activity {
                             }
                             //判断是否是错误款箱RFID
                             else if (boxesMap2.get(key) == null) {
+                                if (DataCach.netType.equals("0")) {
+                                    Intent intent = getIntent();
+                                    Bundle bundle = intent.getBundleExtra("bundle");
+                                    int count = bundle.getInt("count");
+                                    HashMap<String, Object> map = DataCach.taskMap.get(count + "");
+                                    PdaNetInfo pni = (PdaNetInfo) map.get("data");
+                                    DBManager dbManager = new DBManager(context);
+                                    List<ExtractBoxs> extractBoxsList = dbManager.queryExtractBoxs();
+                                    if (extractBoxsList != null) {
+                                        for (ExtractBoxs extractBoxs : extractBoxsList) {
+                                            if (extractBoxs.getRfidNum().equals(key)) {
+                                                HashMap<String, Object> map1 = new HashMap<String, Object>();
+                                                map1.put("list_img", R.drawable.boxes_list_status_1);
+                                                map1.put("list_title", extractBoxs.getBoxSn());
+                                                Log.i("getBoxSn====", "===" + extractBoxs.getBoxSn());
+                                                boxesMap2.put(key, map1);
+                                                listItem.add(map1);
+                                            }
+                                        }
+                                    }
 
-                                PdaLoginMessage pdaLoginMessage = DataCach.getPdaLoginMessage();
-                                Map<String, String> allPdaBoxsMap = pdaLoginMessage.getAllPdaBoxsMap();
-                                if (allPdaBoxsMap.get(key) != null) {
-                                    HashMap<String, Object> map1 = new HashMap<String, Object>();
-                                    map1.put("list_img", R.drawable.boxes_list_status_3);// 图像资源的ID
-                                    map1.put("list_title", allPdaBoxsMap.get(key));
 
-                                    DataCach.boxesMap.put(key, map1);
-                                    boxesMap2.put(key, map1);
-                                    listItem.add(map1);
-                                }
-                            }
+                                    //                                    if (pni != null) {
+                                    //                                        List<PdaCashboxInfo> pdaCashboxInfoList = pni.getCashBoxInfoList();
+                                    //                                        if (pdaCashboxInfoList != null && pdaCashboxInfoList.size() > 0) {
+                                    //                                            for (PdaCashboxInfo info : pdaCashboxInfoList) {
+                                    //                                                if (info.getRfidNum().equals(key)) {
+                                    //                                                    map.put("list_imag", R.drawable.boxes_list_status_1);
+                                    //                                                    map.put("list_title", info.getBoxSn());
+                                    //
+                                    //                                                    DataCach.boxesMap.put(key, map);
+                                    //                                                    boxesMap2.put(key, map);
+                                    //                                                    listItem.add(map);
+                                    //                                                }
+                                    //                                            }
+                                    //                                        }
+                                    //                                    }
 
-                            //判断是否正确扫描到全部款箱和交接人员，如果是自动停止扫描
+                                } else {
+                                    //                                PdaLoginMessage pdaLoginMessage = DataCach.getPdaLoginMessage();
+                                    pdaLoginMsg = DataCach.getPdaLoginMsg();
+                                    Map<String, String> allPdaBoxsMap = pdaLoginMsg.getAllPdaBoxsMap();
+                                    if (allPdaBoxsMap.get(key) != null) {
+                                        HashMap<String, Object> map1 = new HashMap<String, Object>();
+                                        map1.put("list_img", R.drawable.boxes_list_status_3);// 图像资源的ID
+                                        map1.put("list_title", allPdaBoxsMap.get(key));
 
-                            if (boxesMap1 != null && boxesMap1.size() > 0) {
-                                boolean right = true;
-                                Iterator it2 = boxesMap1.keySet().iterator();
-                                while (it2.hasNext()) {
-                                    String key2 = (String) it2.next();
-                                    HashMap<String, Object> map1 = (HashMap<String, Object>) boxesMap1.get(key2);
-                                    if (map1.get("status").equals("0")) {
-                                        right = false;
-                                        break;
+                                        DataCach.boxesMap.put(key, map1);
+                                        boxesMap2.put(key, map1);
+                                        listItem.add(map1);
                                     }
                                 }
-                                if (boxesMap2 != null && boxesMap2.size() > 0) {
-                                    right = false;
-                                }
 
-                                //判断人员是否扫描
-                                if (guardManInfo == null) {
-                                    right = false;
-                                }
-                                if (netPersonInfo == null) {
-                                    right = false;
-                                }
-
-
-                                if (right) {
-                                    String context = startDeviceButton.getText().toString();
-                                    if (context.equals("Stop")) {
-                                        startDevices();
-                                        break;
-                                    }
-                                }
                             }
                         }
-
-                        //					txNum.setText(String.valueOf(myAdapter.getCount()));
                         listItemAdapter.notifyDataSetChanged();
                         break;
 
@@ -316,6 +323,7 @@ public class DetailActivity extends Activity {
 
         };
     }
+
 
     private void connDevices() {
         int result = UhfGetData.OpenUhf(tty_speed, addr, 4, 1, null);
@@ -330,6 +338,7 @@ public class DetailActivity extends Activity {
     }
 
     private void startDevices() {
+        Log.i("!!!!!!!!!!!!!!!!!", "!!!!!!!!!!!!!!!!!!!");
         if (!UfhData.isDeviceOpen()) {
             Toast.makeText(this, R.string.detail_title, Toast.LENGTH_LONG).show();
             return;
@@ -361,13 +370,6 @@ public class DetailActivity extends Activity {
                     if (Scanflag)
                         return;
                     Scanflag = true;
-                    //					if(mode.equals(MainActivity.TABLE_6B)){
-                    //						Log.i("zhouxin", "------onclick-------6b");
-                    //						UfhData.read6b();
-                    //					}else if(mode.equals(MainActivity.TABLE_6C)){
-                    //						UfhData.read6c();
-                    //					}
-                    Log.i("zhouxin", "------onclick-------6c");
                     UfhData.read6c();
                     mHandler.removeMessages(MSG_UPDATE_LISTVIEW);
                     mHandler.sendEmptyMessage(MSG_UPDATE_LISTVIEW);
@@ -414,6 +416,8 @@ public class DetailActivity extends Activity {
         boxesMap1 = new HashMap<String, Object>();
         boxesMap2 = null;
         boxesMap2 = new HashMap<String, Object>();
+        boxesMap3 = null;
+        boxesMap3 = new HashMap<String, Object>();
         netPersonInfo = null;
         guardManInfo = null;
         listItem.removeAll(listItem);
@@ -441,14 +445,23 @@ public class DetailActivity extends Activity {
                     map1.put("status", "0");
 
                     DataCach.boxesMap.put(pci.getRfidNum(), map1);
-                    boxesMap1.put(pci.getRfidNum(), map1);
-                    listItem.add(map1);
+
+                    if (DataCach.netType.equals("1")) {//网点入库item显示
+                        boxesMap1.put(pci.getRfidNum(), map1);
+                        listItem.add(map1);
+                    } else {//网点出库item显示
+                        //                        HashMap<String, Object> map2 = new HashMap<String, Object>();
+                        //                        listItem.add(map2);
+                    }
+
+
                 }
             }
         }
 
         listItemAdapter.notifyDataSetChanged();
     }
+
 
     @Override
     protected void onStart() {
@@ -514,7 +527,7 @@ public class DetailActivity extends Activity {
         //    设置Title的内容
         builder.setTitle("提示");
         //    设置Content来显示一个信息
-        builder.setMessage("确定交接？");
+        builder.setMessage("确定保存？");
         //    设置一个PositiveButton
         builder.setPositiveButton("取消", new DialogInterface.OnClickListener() {
             @Override
@@ -525,30 +538,70 @@ public class DetailActivity extends Activity {
         builder.setNegativeButton("确认", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                showWaitDialog("正在提交数据...");
-                ResultInfo ri = this.getNetIncommitData();
-                if (ri.getCode().endsWith(ri.CODE_ERROR)) {
-                    hideWaitDialog();
-                    Toast.makeText(context, ri.getMessage(), Toast.LENGTH_LONG).show();
-                    return;
-                }
+                showWaitDialog("正在保存数据...");
+                //开始保存数据到数据库
+                DBManager db = new DBManager(context);
+                //时间戳
+                SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                //初始化实体类
+                Recordnet recordnet = new Recordnet();
+                //获取当前时间
+                Date curDate = new Date(System.currentTimeMillis());
+                String date = format.format(curDate);
 
-                List<NameValuePair> params = new ArrayList<NameValuePair>();
-                params.add(new BasicNameValuePair("param", ri.getText()));
-                new HttpPostUtils(Constants.URL_NET_IN_COMMIT, params, new UICallBackDao() {
-                    @Override
-                    public void callBack(ResultInfo resultInfo) {
-                        if (resultInfo.getCode().equals(resultInfo.CODE_ERROR)) {
-                            hideWaitDialog();
-                            Toast.makeText(context, resultInfo.getMessage(), Toast.LENGTH_LONG).show();
+                // FIXME: 2016/11/2 null
+                //线路名称
+                recordnet.setLineSn(pdaLoginMsg.getLineSn());
+
+                //lineId
+                recordnet.setLineId(pdaLoginMsg.getLineId());
+
+                //日期（扫描时间）
+                recordnet.setScanningDate(date);
+
+                // 网点人员名称
+                recordnet.setBankman(person2TextView.getText().toString());
+
+                //押运人员名称
+                recordnet.setGuardman(person1TextView.getText().toString());
+
+                // FIXME: 2016/11/2 null
+                //1:网点入库 ； 0：网点出库
+                recordnet.setLineType(DataCach.netType);
+
+                //判断款箱扫描状态
+                String rightRfidNums = "";
+                String missRfidNums = "";
+                String errorRfidNums = "";
+                if (boxesMap1 != null && boxesMap1.size() > 0) {
+                    Iterator it = boxesMap1.keySet().iterator();
+                    while (it.hasNext()) {
+                        String key = (String) it.next();
+                        HashMap<String, Object> map1 = (HashMap<String, Object>) boxesMap1.get(key);
+                        if (map1.get("status").equals("1")) {
+                            rightRfidNums += ";" + key;
                         } else {
-                            hideWaitDialog();
-                            Toast.makeText(context, resultInfo.getMessage(), Toast.LENGTH_LONG).show();
+                            missRfidNums += ";" + key;
                         }
                     }
-                }).execute();
-                hideWaitDialog();
+                    if (rightRfidNums.length() > 0) {
+                        rightRfidNums = rightRfidNums.substring(1);
+                    }
+                    if (missRfidNums.length() > 0) {
+                        missRfidNums = missRfidNums.substring(1);
+                    }
+                }
+                //0：扫描正确 ; 1：扫描错误
+                if (rightRfidNums.length() > 0 && missRfidNums.length() == 0 && errorRfidNums.length() == 0) {
+                    recordnet.setScanStatus(Constants.NET_COMMIT_STATUS_RIGHT);
+                } else {
+                    recordnet.setScanStatus(Constants.NET_COMMIT_STATUS_ERROR);
+                }
 
+                //备注信息
+                recordnet.setNote(remarkEditView.getText().toString());
+
+                //网点号
                 // 得到跳转到该Activity的Intent对象
                 Intent intent = getIntent();
                 Bundle bundle = intent.getBundleExtra("bundle");
@@ -558,7 +611,154 @@ public class DetailActivity extends Activity {
                     map.put("list_img", R.drawable.task_1);// 图像资源的ID
                     map.put("list_worktime", "已完成");
                 }
-                backListPage();
+                //                backListPage();
+                HashMap<String, Object> map = DataCach.taskMap.get(count + "");
+                PdaNetInfo pdanetinfo = (PdaNetInfo) map.get("data");
+                recordnet.setBankId(pdanetinfo.getBankId());
+
+                //网点人员ID
+                try {
+                    recordnet.setBankmanId(netPersonInfo.getNetPersonId());
+                } catch (Exception e) {
+                    Toast.makeText(context, "请重新扫描网点人员", Toast.LENGTH_SHORT).show();
+                }
+
+
+                //押运人员ID
+
+                try {
+                    recordnet.setGuardmanId(guardManInfo.getGuardManId());
+                } catch (Exception e) {
+                    Toast.makeText(context, "请重新扫描网点人员", Toast.LENGTH_SHORT).show();
+                }
+
+
+                //存入数据库
+                db.addRecordnet(recordnet);
+                //取当前流水表最大值
+                int maxId = db.queryMaxRecordNet();
+
+                //                //这个表b_scanning_recordnet 的外键
+                //                waternet.setScanningNetid();
+
+
+                //                //箱包名称  //箱包ID  //网点ID
+                //                PdaNetInfo pni = (PdaNetInfo) map.get("data");
+                //                List<PdaCashboxInfo> cashBoxInfoList = pni.getCashBoxInfoList();
+                //                if (cashBoxInfoList != null && cashBoxInfoList.size() > 0) {
+                //                    for (PdaCashboxInfo pci : cashBoxInfoList) {
+                //                        waternet.setBoxSn(pci.getBoxSn());
+                //                        waternet.setBoxId(pci.getRfidNum());
+                //                        waternet.setBankId(pci.getBankId());
+                //                    }
+                //                }
+
+                //日期
+                //                waternet.setScanningDate(date);
+
+                //0:正确入库   1：错误入库  2：遗漏
+
+                if (boxesMap1 != null && boxesMap1.size() > 0) {
+                    Iterator it2 = boxesMap1.keySet().iterator();
+                    while (it2.hasNext()) {
+                        Waternet net = new Waternet();
+                        String key2 = (String) it2.next();
+                        HashMap<String, Object> map1 = (HashMap<String, Object>) boxesMap1.get(key2);
+                        if (map1.get("status").equals("1")) {
+                            net.setStatus("2");
+                        } else if (map1.get("status").equals("0")) {
+                            net.setStatus("1");
+                        }
+                        String title = map.get("list_title").toString();
+                        net.setBoxId(key2);
+                        net.setBoxSn(title);
+                        net.setScanningType((DataCach.netType));
+                        net.setBankId(pdanetinfo.getBankId());
+                        net.setScanningDate(date);
+                        net.setScanningNetid(maxId);
+                        db.addWaternet(net);
+                    }
+                }
+                if (boxesMap2 != null && boxesMap2.size() > 0) {
+                    Iterator it2 = boxesMap1.keySet().iterator();
+                    while (it2.hasNext()) {
+                        Waternet net = new Waternet();
+                        String key2 = (String) it2.next();
+                        HashMap<String, Object> map2 = (HashMap<String, Object>) boxesMap1.get(key2);
+                        net.setStatus("1");
+                        String title = map.get("list_title").toString();
+                        net.setBoxId(key2);
+                        net.setBoxSn(title);
+                        net.setScanningType((DataCach.netType));
+                        net.setBankId(pdanetinfo.getBankId());
+                        net.setScanningDate(date);
+                        net.setScanningNetid(maxId);
+                        db.addWaternet(net);
+                    }
+                }
+
+                hideWaitDialog();
+
+                //                if (boxesMap1 != null && boxesMap1.size() > 0) {
+                //
+                //                    Iterator it2 = boxesMap1.keySet().iterator();
+                //                    while (it2.hasNext()) {
+                //                        String key2 = (String) it2.next();
+                //                        HashMap<String, Object> map1 = (HashMap<String, Object>) boxesMap1.get(key2);
+                //                        if (map1.get("status").equals("0")) {
+                //                            waternet.setStatus("2");
+                //                        }
+                //                        break;
+                //                    }
+                //                    if (boxesMap2 != null && boxesMap2.size() > 0) {
+                //                        waternet.setStatus("1");
+                //                    } else {
+                //                        waternet.setStatus("0");
+                //                    }
+                //                }
+                //
+                //
+                //                //1:网点入库 ； 0：网点出库
+                //                waternet.setScanningType((DataCach.netType));
+                //
+                //                //存入数据库
+                //                db.addWaternet(waternet);
+
+
+                //ResultInfo ri = this.getNetIncommitData();
+                //if (ri.getCode().endsWith(ri.CODE_ERROR)) {
+                //                    hideWaitDialog();
+                //                    Toast.makeText(context, ri.getMessage(), Toast.LENGTH_LONG).show();
+                //                    return;
+                //                }
+                //
+                //
+                //                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                //                params.add(new BasicNameValuePair("param", ri.getText()));
+                //                new HttpPostUtils(Constants.URL_NET_IN_COMMIT, params, new UICallBackDao() {
+                //                    @Override
+                //                    public void callBack(ResultInfo resultInfo) {
+                //                        if (resultInfo.getCode().equals(resultInfo.CODE_ERROR)) {
+                //                            hideWaitDialog();
+                //                            Toast.makeText(context, resultInfo.getMessage(), Toast.LENGTH_LONG).show();
+                //                        } else {
+                //                            hideWaitDialog();
+                //                            Toast.makeText(context, resultInfo.getMessage(), Toast.LENGTH_LONG).show();
+                //                        }
+                //                    }
+                //                }).execute();
+                //                hideWaitDialog();
+
+                //                // 得到跳转到该Activity的Intent对象
+                //                Intent intent = getIntent();
+                //                Bundle bundle = intent.getBundleExtra("bundle");
+                //                int count = bundle.getInt("count");
+                //                if (DataCach.taskMap.get(count + "") != null) {
+                //                    HashMap<String, Object> map = DataCach.taskMap.get(count + "");
+                //                    map.put("list_img", R.drawable.task_1);// 图像资源的ID
+                //                    map.put("list_worktime", "已完成");
+                //                }
+                //                backListPage();
             }
 
             private ResultInfo getNetIncommitData() {
@@ -579,6 +779,7 @@ public class DetailActivity extends Activity {
                     ri.setMessage("请扫描款箱");
                     return ri;
                 }
+
 
                 //开始组装数据
                 PdaLoginMessage pdaLoginMessage = DataCach.getPdaLoginMessage();
@@ -601,48 +802,6 @@ public class DetailActivity extends Activity {
                 HashMap<String, Object> map = DataCach.taskMap.get(count + "");
                 PdaNetInfo pni = (PdaNetInfo) map.get("data");
                 dataMap.put("netId", pni.getBankId());
-
-                String rightRfidNums = "";
-                String missRfidNums = "";
-                String errorRfidNums = "";
-                if (boxesMap1 != null && boxesMap1.size() > 0) {
-                    Iterator it = boxesMap1.keySet().iterator();
-                    while (it.hasNext()) {
-                        String key = (String) it.next();
-                        HashMap<String, Object> map1 = (HashMap<String, Object>) boxesMap1.get(key);
-                        if (map1.get("status").equals("1")) {
-                            rightRfidNums += ";" + key;
-                        } else {
-                            missRfidNums += ";" + key;
-                        }
-                    }
-                    if (rightRfidNums.length() > 0) {
-                        rightRfidNums = rightRfidNums.substring(1);
-                    }
-                    if (missRfidNums.length() > 0) {
-                        missRfidNums = missRfidNums.substring(1);
-                    }
-                }
-
-                if (boxesMap2 != null && boxesMap2.size() > 0) {
-                    Iterator it = boxesMap2.keySet().iterator();
-                    while (it.hasNext()) {
-                        String key = (String) it.next();
-                        errorRfidNums += ";" + key;
-                    }
-                    if (errorRfidNums.length() > 0) {
-                        errorRfidNums = errorRfidNums.substring(1);
-                    }
-                }
-                dataMap.put("rightRfidNums", rightRfidNums);
-                dataMap.put("missRfidNums", missRfidNums);
-                dataMap.put("errorRfidNums", errorRfidNums);
-
-                if (rightRfidNums.length() > 0 && missRfidNums.length() == 0 && errorRfidNums.length() == 0) {
-                    dataMap.put("scanStatus", Constants.NET_COMMIT_STATUS_RIGHT);
-                } else {
-                    dataMap.put("scanStatus", Constants.NET_COMMIT_STATUS_ERROR);
-                }
 
                 JSONObject jsonObject = new JSONObject(dataMap);
                 String data = jsonObject.toString();
@@ -667,9 +826,11 @@ public class DetailActivity extends Activity {
     }
 
     void backListPage() {
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        Intent intent = new Intent(DetailActivity.this, NetOutInActivity.class);
+        startActivity(intent);
         finish();
     }
+
 
     void doCommit(String flag) {
 
@@ -1002,3 +1163,6 @@ public class DetailActivity extends Activity {
         return BitmapFactory.decodeFile(filePath, options);
     }
 }
+
+// TODO: 2016/11/2  1、禁止自动停止扫描 2、保存数据库的时候保存所有扫描到的数据 3、组装数据并且提交两张表内的所有数据 4、新建出库任务表 5、网点出库任务列表展示 6、网点出库任务详情改动 7、保存提交 8、二维码扫描item数据展示 9、二维码扫描数据库创建添加修改提交 10、结束Activity的时候停止扫描
+// FIXME: 2016/11/3 1、查询时候do while循环 2、提交完成后更改数据状态避免无法完成任务。3,提交时押运人员网点人员不能为空

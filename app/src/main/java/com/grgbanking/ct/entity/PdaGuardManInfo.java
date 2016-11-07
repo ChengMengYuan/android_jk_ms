@@ -3,10 +3,11 @@ package com.grgbanking.ct.entity;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PdaGuardManInfo {
+public class PdaGuardManInfo implements Serializable {
 	private String guardManId;
 	private String guardManName;
 	private String guardManRFID;

@@ -1,12 +1,13 @@
 package com.grgbanking.ct.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 
-public class PdaNetPersonInfo {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PdaNetPersonInfo implements Serializable {
 	private String netPersonId;
 	private String netPersonName;
 	private String netPersonRFID;

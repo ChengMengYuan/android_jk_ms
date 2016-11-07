@@ -4,7 +4,7 @@ public class Constants {
     //public  static final  String  BASE_SERVER_URL="http://183.63.190.43:6600/hbct"; //河北晨通正式服务器
 
     //	public  static final  String  BASE_SERVER_URL="http://183.63.190.43:6601/ycyt"; //宜昌宜通正式服务器
-    public static final String BASE_SERVER_URL = "http://192.168.1.15:8080/android_jkweb/"; //宜昌宜通正式服务器
+    public static final String BASE_SERVER_URL = "http://192.168.1.13:8080/android_jkweb/"; //宜昌宜通正式服务器
     //    public static final String BASE_SERVER_URL = "http://192.128.1.108/android_jkweb/"; //宜昌宜通正式服务器
 
 

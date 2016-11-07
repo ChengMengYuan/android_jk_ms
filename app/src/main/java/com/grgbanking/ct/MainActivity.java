@@ -24,10 +24,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.grgbanking.ct.cach.DataCach;
+import com.grgbanking.ct.database.Extract;
 import com.grgbanking.ct.database.Person;
 import com.grgbanking.ct.database.PersonTableHelper;
-import com.grgbanking.ct.entity.PdaLoginMessage;
+import com.grgbanking.ct.entity.PdaCashboxInfo;
+import com.grgbanking.ct.entity.PdaLoginMsg;
 import com.grgbanking.ct.entity.PdaNetInfo;
+import com.grgbanking.ct.entity.PdaNetPersonInfo;
 
 import org.apache.http.NameValuePair;
 
@@ -35,8 +38,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class MainActivity extends Activity {
+    private static String TAG = "MainActivity";
 
     PopupMenu popupMenu;
     Menu menu;
@@ -50,6 +56,7 @@ public class MainActivity extends Activity {
     private Context context;
     TextView mainTitle;
     Button mainBackButton = null;
+    private PdaLoginMsg pdaLoginMsg;
 
     @SuppressLint("NewApi")
     @Override
@@ -63,6 +70,12 @@ public class MainActivity extends Activity {
         popupMenu = new PopupMenu(this, findViewById(R.id.popupmenu_btn));
         menu = popupMenu.getMenu();
 
+        //接收数据
+        pdaLoginMsg = (PdaLoginMsg) getIntent().getSerializableExtra("pdaLoginMsg");
+        //放入缓存
+        DataCach.setPdaLoginMsg(pdaLoginMsg);
+
+
         // 通过XML文件添加菜单项
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.popupmenu, menu);
@@ -70,8 +83,8 @@ public class MainActivity extends Activity {
 
         mainTitle = (TextView) findViewById(R.id.main_title_view);
         listView = (ListView) findViewById(R.id.ListView01);
-//		saomiaoImageView=(ImageView) findViewById(R.id.saosao_button);
-//		saomiaoImageView.setOnClickListener(saomiaoButtonclick);
+        //		saomiaoImageView=(ImageView) findViewById(R.id.saosao_button);
+        //		saomiaoImageView.setOnClickListener(saomiaoButtonclick);
         mainBackButton = (Button) findViewById(R.id.main_btn_back);
 
         String netType = DataCach.netType;
@@ -90,119 +103,18 @@ public class MainActivity extends Activity {
         listView.setAdapter(listItemAdapter);
 
         person = PersonTableHelper.queryEntity(this);
-//		String userId =person.getUser_id();
-//		String name = person.getUser_name();
+        //		String userId =person.getUser_id();
+        //		String name = person.getUser_name();
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-//		params.add(new BasicNameValuePair("userId", userId));
+        //		params.add(new BasicNameValuePair("userId", userId));
         showWaitDialog("正在加载中...");
-
 
 
         loadLoginMessageCach();
 
         hideWaitDialog();
 
-
-//		new HttpPostUtils(Constants.URL_GET_TASK_LIST, params,new UICallBackDao() {
-//					@Override
-//					public void callBack(ResultInfo resultInfo) {
-////						if (resultInfo==null) {
-////							hideWaitDialog();
-////						}
-////						JSONArray jsonArray = resultInfo.getJsonArray();
-////						for (int i = 0; i < jsonArray.length(); i++) {
-////							try {
-////								JSONObject jsonObject = jsonArray.getJSONObject(i);
-////								HashMap<String, Object> map = new HashMap<String, Object>();
-////								map.put("list_img", R.drawable.task_icon_1);// 图像资源的ID
-////								map.put("list_title",jsonObject.getString("branchName"));
-////								map.put("list_position",jsonObject.getString("branchAddress"));
-////								map.put("list_worktime",jsonObject.getString("worktime"));
-////								listItem.add(map);
-////								listItemAdapter.notifyDataSetChanged();
-////							} catch (JSONException e) {
-////								e.printStackTrace();
-////							}
-////							hideWaitDialog();
-////						}
-//						
-//						if (DataCach.taskMap != null && DataCach.taskMap.size() > 0) {
-//							Iterator it = DataCach.taskMap.keySet().iterator();
-//							while (it.hasNext()) {
-//								String key = (String)it.next();
-//								HashMap<String, Object> map = DataCach.taskMap.get(key);
-//								listItem.add(map);
-//							}
-//							
-//						} else {
-//							HashMap<String, Object> map1 = new HashMap<String, Object>();
-//							map1.put("list_img", R.drawable.task_2);// 图像资源的ID
-//							map1.put("list_title","幸福分社");
-//							map1.put("list_position","款箱数量：10个");
-//							map1.put("list_worktime","未完成");
-//							
-//							DataCach.taskMap.put("0", map1);
-//							listItem.add(map1);
-//							
-//							HashMap<String, Object> map2 = new HashMap<String, Object>();
-//							map2.put("list_img", R.drawable.task_2);// 图像资源的ID
-//							map2.put("list_title","前进分社");
-//							map2.put("list_position","款箱数量：5个");
-//							map2.put("list_worktime","未完成");
-//							
-//							DataCach.taskMap.put("1", map2);
-//							listItem.add(map2);
-//							
-//							HashMap<String, Object> map3 = new HashMap<String, Object>();
-//							map3.put("list_img", R.drawable.task_2);// 图像资源的ID
-//							map3.put("list_title","湾里联社");
-//							map3.put("list_position","款箱数量：7个");
-//							map3.put("list_worktime","未完成");
-//							
-//							DataCach.taskMap.put("2", map3);
-//							listItem.add(map3);
-//							
-//							HashMap<String, Object> map4 = new HashMap<String, Object>();
-//							map4.put("list_img", R.drawable.task_2);// 图像资源的ID
-//							map4.put("list_title","翠岩信用社");
-//							map4.put("list_position","款箱数量：8个");
-//							map4.put("list_worktime","未完成");
-//							
-//							DataCach.taskMap.put("3", map4);
-//							listItem.add(map4);
-//							
-//							HashMap<String, Object> map5 = new HashMap<String, Object>();
-//							map5.put("list_img", R.drawable.task_2);// 图像资源的ID
-//							map5.put("list_title","岭口信用社");
-//							map5.put("list_position","款箱数量：8个");
-//							map5.put("list_worktime","未完成");
-//							
-//							DataCach.taskMap.put("4", map5);
-//							listItem.add(map5);
-//							
-//							HashMap<String, Object> map6 = new HashMap<String, Object>();
-//							map6.put("list_img", R.drawable.task_2);// 图像资源的ID
-//							map6.put("list_title","红谷滩信用社");
-//							map6.put("list_position","款箱数量：11个");
-//							map6.put("list_worktime","未完成");
-//							
-//							DataCach.taskMap.put("5", map6);
-//							listItem.add(map6);
-//							
-//							HashMap<String, Object> map7 = new HashMap<String, Object>();
-//							map7.put("list_img", R.drawable.task_2);// 图像资源的ID
-//							map7.put("list_title","太平信用社");
-//							map7.put("list_position","款箱数量：2个");
-//							map7.put("list_worktime","未完成");
-//							
-//							DataCach.taskMap.put("6", map7);
-//							listItem.add(map7);
-//						}
-//						listItemAdapter.notifyDataSetChanged();
-//						hideWaitDialog();
-//					}
-//				}).execute();
 
         // 添加点击
         listView.setOnItemClickListener(new OnItemClickListener() {
@@ -231,10 +143,8 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //清空缓存
-                DataCach.clearAllDataCach();
-
-                Intent intent = new Intent();
-                intent.setClass(MainActivity.this, NetOutInActivity.class);
+                //                DataCach.clearAllDataCach();
+                Intent intent = new Intent(MainActivity.this, NetOutInActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -246,9 +156,9 @@ public class MainActivity extends Activity {
 
                 switch (menuItem.getItemId()) {
                     case R.id.item_back:
-//						Toast.makeText(MainActivity.this, "退出",
-//								Toast.LENGTH_LONG).show();
-//			startActivity(new Intent(getApplicationContext(), CaptureActivity.class));
+                        //						Toast.makeText(MainActivity.this, "退出",
+                        //								Toast.LENGTH_LONG).show();
+                        //			startActivity(new Intent(getApplicationContext(), CaptureActivity.class));
                         //清空缓存
                         DataCach.clearAllDataCach();
 
@@ -269,6 +179,7 @@ public class MainActivity extends Activity {
     }
 
     private void loadLoginMessageCach() {
+        //如果缓存中有数据
         if (DataCach.taskMap != null && DataCach.taskMap.size() > 0) {
             Iterator it = DataCach.taskMap.keySet().iterator();
             while (it.hasNext()) {
@@ -276,45 +187,156 @@ public class MainActivity extends Activity {
                 HashMap<String, Object> map = DataCach.taskMap.get(key);
                 listItem.add(map);
             }
-
         } else {
-            PdaLoginMessage plm = DataCach.getPdaLoginMessage();
-            if (plm != null) {
+            if (DataCach.netType.equals("1")) {//网点入库
+                if (pdaLoginMsg != null) {
+                    List<PdaNetInfo> netInfoList = pdaLoginMsg.getNetInfoList();
+                    if (netInfoList != null && netInfoList.size() > 0) {
+                        for (int i = 0; i < netInfoList.size(); i++) {
 
-                List<PdaNetInfo> netInfoList = plm.getNetInfoList();
-                if (netInfoList != null && netInfoList.size() > 0) {
+                            PdaNetInfo pni = netInfoList.get(i);
+                            String bankId = pni.getBankId();
+                            String bankName = pni.getBankName();
+                            String netstatus = pni.getNetTaskStatus();
+                            List<PdaNetPersonInfo> personList = pni.getNetPersonInfoList();
+                            List<PdaCashboxInfo> cashBoxList = pni.getCashBoxInfoList();
 
-                    for (int i = 0; i < netInfoList.size(); i++) {
+                            int count = 0;
+                            for (PdaCashboxInfo cashinfo : cashBoxList) {
+                                if (cashinfo.getBankId().equals(bankId)) {
+                                    count++;
+                                }
+                            }
+                            HashMap<String, Object> map1 = new HashMap<String, Object>();
+                            //判断网点是否已完成
+                            if (pni.getNetTaskStatus().equals(Constants.NET_TASK_STATUS_FINISH)) {
+                                map1.put("list_img", R.drawable.task_1);// 图像资源的ID
+                                map1.put("list_title", pni.getBankName());
+                                map1.put("list_position", count);
+                                map1.put("list_worktime", "已完成");
+                                //建立一個新的對象
+                                PdaNetInfo net = new PdaNetInfo();
+                                //存儲新的款箱信息
+                                List<PdaCashboxInfo> cashList = new ArrayList<PdaCashboxInfo>();
+                                //获取當前所有的款箱
+                                List<PdaCashboxInfo> cashBoxList2 = pni.getCashBoxInfoList();
+                                for (PdaCashboxInfo cashinfo2 : cashBoxList2) {
+                                    if (cashinfo2.getBankId().equals(bankId)) {
+                                        cashList.add(cashinfo2);
+                                    }
+                                }
+                                net.setBankId(bankId);
+                                net.setNetTaskStatus(netstatus);
+                                net.setBankName(bankName);
+                                net.setCashBoxInfoList(cashList);
+                                net.setNetPersonInfoList(personList);
+                                map1.put("data", net);
 
-                        PdaNetInfo pni = netInfoList.get(i);
-
-                        int count = 0;
-                        if (pni.getCashBoxInfoList() != null) {
-                            count = pni.getCashBoxInfoList().size();
+                            } else {
+                                map1.put("list_img", R.drawable.task_2);// 图像资源的ID
+                                map1.put("list_title", pni.getBankName());
+                                map1.put("list_position", count);
+                                map1.put("list_worktime", "未完成");
+                                //建立一個新的對象
+                                PdaNetInfo net = new PdaNetInfo();
+                                //存儲新的款箱信息
+                                List<PdaCashboxInfo> cashList = new ArrayList<PdaCashboxInfo>();
+                                //獲取當前所有的款箱
+                                List<PdaCashboxInfo> cashBoxList2 = pni.getCashBoxInfoList();
+                                for (PdaCashboxInfo cashinfo2 : cashBoxList2) {
+                                    if (cashinfo2.getBankId().equals(bankId)) {
+                                        cashList.add(cashinfo2);
+                                    }
+                                }
+                                net.setBankId(bankId);
+                                net.setNetTaskStatus(netstatus);
+                                net.setBankName(bankName);
+                                net.setCashBoxInfoList(cashList);
+                                net.setNetPersonInfoList(personList);
+                                map1.put("data", net);
+                            }
+                            DataCach.taskMap.put("" + i, map1);
+                            listItem.add(map1);
                         }
-
-                        HashMap<String, Object> map1 = new HashMap<String, Object>();
-
-                        //判断网点是否已完成
-                        if (pni.getNetTaskStatus().equals(Constants.NET_TASK_STATUS_FINISH)) {
-
-                            map1.put("list_img", R.drawable.task_1);// 图像资源的ID
-                            map1.put("list_title", pni.getBankName());
-                            map1.put("list_position", count);
-                            map1.put("list_worktime", "已完成");
-                            map1.put("data", pni);
-                        } else {
-
-                            map1.put("list_img", R.drawable.task_2);// 图像资源的ID
-                            map1.put("list_title", pni.getBankName());
-                            map1.put("list_position", count);
-                            map1.put("list_worktime", "未完成");
-                            map1.put("data", pni);
-                        }
-
-                        DataCach.taskMap.put("" + i, map1);
-                        listItem.add(map1);
                     }
+                }
+            } else {//网点出库
+                List<Extract> extractList = pdaLoginMsg.getExtracts();
+                for (int i = 0; i < extractList.size(); i++) {
+                    Extract et = extractList.get(i);
+                    String bankId = et.getBankId();
+                    String bankName = et.getBankName();
+                    String netstatus = et.getNetTaskStatus();
+                    List<PdaNetPersonInfo> personList = et.getNetPersonInfoList();
+                    //List<PdaCashboxInfo> cashBoxList = pni.getCashBoxInfoList();
+                    Map<String, String> ExtractBoxsMap = pdaLoginMsg.getAllPdaBoxsMap();
+                    List<PdaCashboxInfo> pdaCashboxInfolist = new ArrayList<PdaCashboxInfo>();
+                    Set set = ExtractBoxsMap.keySet();
+                    if (ExtractBoxsMap != null && ExtractBoxsMap.size() > 0) {
+                        for (Iterator iterator = set.iterator(); iterator.hasNext(); ) {
+                            String rfidNum = (String) iterator.next();
+                            String value = ExtractBoxsMap.get(rfidNum);
+                            String[] tmpList = value.split("&");
+                            String boxSn = tmpList[0];
+                            String allbankId = tmpList[1];
+                            PdaCashboxInfo pdaCashboxInfo = new PdaCashboxInfo();
+                            pdaCashboxInfo.setRfidNum(rfidNum);
+                            pdaCashboxInfo.setBoxSn(boxSn);
+                            pdaCashboxInfo.setBankId(allbankId);
+                            pdaCashboxInfolist.add(pdaCashboxInfo);
+                        }
+                    }
+                    int count = 0;
+                    HashMap<String, Object> map1 = new HashMap<String, Object>();
+                    //判断网点是否已完成
+                    if (et.getNetTaskStatus().equals(Constants.NET_TASK_STATUS_FINISH)) {
+                        map1.put("list_img", R.drawable.task_1);// 图像资源的ID
+                        map1.put("list_title", et.getBankName());
+                        map1.put("list_position", count);
+                        map1.put("list_worktime", "已完成");
+                        //建立一個新的對象
+                        PdaNetInfo net = new PdaNetInfo();
+                        //存儲新的款箱信息
+                        List<PdaCashboxInfo> cashList = new ArrayList<PdaCashboxInfo>();
+                        //获取當前所有的款箱
+                        List<PdaCashboxInfo> cashBoxList2 = pdaCashboxInfolist;
+                        for (PdaCashboxInfo cashinfo2 : cashBoxList2) {
+                            if (cashinfo2.getBankId().equals(bankId)) {
+                                cashList.add(cashinfo2);
+                            }
+                        }
+                        net.setBankId(bankId);
+                        net.setNetTaskStatus(netstatus);
+                        net.setBankName(bankName);
+                        net.setCashBoxInfoList(cashList);
+                        net.setNetPersonInfoList(personList);
+                        map1.put("data", net);
+
+                    } else {
+                        map1.put("list_img", R.drawable.task_2);// 图像资源的ID
+                        map1.put("list_title", et.getBankName());
+                        map1.put("list_position", count);
+                        map1.put("list_worktime", "未完成");
+                        //建立一個新的對象
+                        PdaNetInfo net = new PdaNetInfo();
+                        //存儲新的款箱信息
+                        List<PdaCashboxInfo> cashList = new ArrayList<PdaCashboxInfo>();
+                        //獲取當前所有的款箱
+                        List<PdaCashboxInfo> cashBoxList2 = pdaCashboxInfolist;
+                        for (PdaCashboxInfo cashinfo2 : cashBoxList2) {
+                            if (cashinfo2.getBankId().equals(bankId)) {
+                                cashList.add(cashinfo2);
+                            }
+                        }
+                        net.setBankId(bankId);
+                        net.setNetTaskStatus(netstatus);
+                        net.setBankName(bankName);
+                        net.setCashBoxInfoList(cashList);
+                        net.setNetPersonInfoList(personList);
+                        map1.put("data", net);
+                    }
+                    DataCach.taskMap.put("" + i, map1);
+                    listItem.add(map1);
                 }
             }
         }
@@ -343,7 +365,7 @@ public class MainActivity extends Activity {
     OnClickListener saomiaoButtonclick = new OnClickListener() {
         @Override
         public void onClick(View arg0) {
-//			startActivity(new Intent(getApplicationContext(), CaptureActivity.class));
+            //			startActivity(new Intent(getApplicationContext(), CaptureActivity.class));
             //清空缓存
             DataCach.clearAllDataCach();
 

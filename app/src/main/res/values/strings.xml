@@ -47,5 +47,7 @@
     <string name="stop">停止</string>
     <string name="scan">扫描</string>
     <string name="peixiang">二维码</string>
+    <string name="rfid">RFID:</string>
+    <string name="scan_qc">二维码扫描</string>
 
 </resources>

@@ -43,7 +43,27 @@ public class DBHelper extends SQLiteOpenHelper {
     /**
      * 网点任务
      */
-    public static final String TABLE_NetTask_NAME ="NetTask";
+    public static final String TABLE_NetTask_NAME = "NetTask";
+
+    /**
+     * 记录表
+     */
+    public static final String TABLE_WATERNET_NAME = "Waternet";
+
+    /**
+     * 流水表
+     */
+    public static final String TABLE_RECORDNET_NAME = "Recordnet";
+
+    /**
+     * 出库任务表
+     */
+    public static final String TABLE_EXTRACT_NAME = "Extract";
+
+    /**
+     * 出库款箱表
+     */
+    public static final String TABLE_EXTRACTBOXS_NAME = "ExtractBoxs";
 
     private String sql_create_ConvoyMan = "CREATE TABLE IF NOT EXISTS " +
             TABLE_ConvoyMan_NAME +
@@ -70,7 +90,9 @@ public class DBHelper extends SQLiteOpenHelper {
             TABLE_PdaNetInfo_NAME +
             "(bankId VARCHAR PRIMARY KEY ," +
             "bankName VARCHAR," +
-            "netTaskStatus VARCHAR)";
+            "netTaskStatus VARCHAR," +
+            "lineSn VARCHAR," +
+            "lineId VARCHAR)";
 
     private String sql_create_PdaCashboxInfo = "CREATE TABLE IF NOT EXISTS " +
             TABLE_PdaCashboxInfo_NAME +
@@ -81,16 +103,59 @@ public class DBHelper extends SQLiteOpenHelper {
     private String sql_create_NetTask = "CREATE TABLE IF NOT EXISTS " +
             TABLE_NetTask_NAME +
             "(ID INTEGER PRIMARY KEY AUTOINCREMENT ," +
-            "bankId VARCHAR," +
+            "bankId boxSn," +
             "bankName VARCHAR," +
             "netTaskStatus VARCHAR," +
             "rfidNum VARCHAR," +
             "boxSn VARCHAR)";
 
+
+    private String sql_create_Waternet = "CREATE TABLE IF NOT EXISTS " +
+            TABLE_WATERNET_NAME +
+            "(ID INTEGER PRIMARY KEY AUTOINCREMENT ," +
+            "scanningNetid INTEGER," +
+            "boxSn VARCHAR," +
+            "boxId VARCHAR," +
+            "bankId VARCHAR," +
+            "scanningDate VARCHAR," +
+            "status VARCHAR," +
+            "ScanningType VARCHAR)";
+
+    private String sql_create_Recordnet = "CREATE TABLE IF NOT EXISTS " +
+            TABLE_RECORDNET_NAME +
+            "(ID INTEGER PRIMARY KEY AUTOINCREMENT ," +
+            "lineSn VARCHAR," +
+            "scanningDate VARCHAR," +
+            "bankman VARCHAR," +
+            "guardman VARCHAR," +
+            "lineType VARCHAR," +
+            "scanStatus VARCHAR," +
+            "note VARCHAR," +
+            "bankId VARCHAR," +
+            "bankmanId VARCHAR," +
+            "guardmanId VARCHAR," +
+            "lineId VARCHAR)";
+
+    private String sql_create_Extract = "CREATE TABLE IF NOT EXISTS " +
+            TABLE_EXTRACT_NAME +
+            "(bankId VARCHAR PRIMARY KEY," +
+            "bankName VARCHAR," +
+            "netTaskStatus VARCHAR," +
+            "lineSn VARCHAR," +
+            "lineId VARCHAR)";
+
+    private String sql_create_ExtractBoxs = "CREATE TABLE IF NOT EXISTS " +
+            TABLE_EXTRACTBOXS_NAME +
+            "(rfidNum VARCHAR PRIMARY KEY ," +
+            "bankId VARCHAR," +
+            "boxSn VARCHAR)";
+
+
+
     public DBHelper(Context context, SQLiteDatabase db) {
         //CursorFactory设置为null,使用默认值
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        Log.i("",DATABASE_NAME);
+        Log.i("", DATABASE_NAME);
     }
 
     @Override
@@ -104,6 +169,10 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(sql_create_PdaNetInfo);
         db.execSQL(sql_create_PdaCashboxInfo);
         db.execSQL(sql_create_NetTask);
+        db.execSQL(sql_create_Waternet);
+        db.execSQL(sql_create_Recordnet);
+        db.execSQL(sql_create_Extract);
+        db.execSQL(sql_create_ExtractBoxs);
     }
 
     @Override

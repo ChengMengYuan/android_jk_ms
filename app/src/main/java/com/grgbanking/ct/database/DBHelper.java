@@ -11,6 +11,7 @@ import android.util.Log;
  */
 public class DBHelper extends SQLiteOpenHelper {
 
+
     //database name
     private static final String DATABASE_NAME = "hlctPDA.db";
     private static final SQLiteDatabase.CursorFactory DATABASE_FACTORY = null;
@@ -103,7 +104,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private String sql_create_NetTask = "CREATE TABLE IF NOT EXISTS " +
             TABLE_NetTask_NAME +
             "(ID INTEGER PRIMARY KEY AUTOINCREMENT ," +
-            "bankId boxSn," +
+            "bankId VARCHAR," +
             "bankName VARCHAR," +
             "netTaskStatus VARCHAR," +
             "rfidNum VARCHAR," +
@@ -152,15 +153,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
 
-    public DBHelper(Context context, SQLiteDatabase db) {
+    public DBHelper(Context context) {
         //CursorFactory设置为null,使用默认值
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        Log.i("", DATABASE_NAME);
+//        Log.i("", DATABASE_NAME);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
         Log.i("DBHelper", "onCreate被调用了");
         //创建表
         db.execSQL(sql_create_ConvoyMan);

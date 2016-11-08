@@ -133,14 +133,18 @@ public class NetOutInActivity extends Activity {
                             }
                             //存入数据库
                             DBManager dbmanager = new DBManager(context);
-                            dbmanager.delete();
+                            try {
+                                dbmanager.delete();
+                            } catch (Exception e) {
+                                Log.e(TAG, "" + e);
+                            }
+
                             dbmanager.addConvoyMan(convoyManInfo);
                         }
                         //查询押运人员数据
                         DBManager db = new DBManager(context);
                         ArrayList<ConvoyMan> manList = (ArrayList<ConvoyMan>) db.queryConvoyMan();
                         if (manList != null && manList.size() > 0) {
-                            Log.i(TAG, "开始打印cMan=====");
                             for (ConvoyMan cMan : manList) {
                                 Log.i(TAG, "" + cMan.getGuardManId());
                                 Log.i(TAG, "" + cMan.getGuardManName());
@@ -483,62 +487,78 @@ public class NetOutInActivity extends Activity {
                 //访问数据库
                 DBManager db = new DBManager(context);
                 PdaLoginMsg pdaLoginMsg = new PdaLoginMsg();
-                //取出所有款箱
-                ArrayList<ExtractBoxs> ExtractBoxsList = (ArrayList<ExtractBoxs>) db.queryExtractBoxs();
-                Map<String, String> ExtractBoxsmap = new HashMap<String, String>();
-                for (ExtractBoxs ExtractBox : ExtractBoxsList) {
-                    ExtractBox.getRfidNum();
-                    ExtractBox.getBankId();
-                    ExtractBox.getBoxSn();
-                    ExtractBoxsmap.put(ExtractBox.getRfidNum(), ExtractBox.getBoxSn() + "&" + ExtractBox.getBankId());
-                }
-                pdaLoginMsg.setAllPdaBoxsMap(ExtractBoxsmap);
-
-
-
-
-                //取出网点人员
-                List<NetMan> netMen = db.queryNetMan();
-                List<PdaNetPersonInfo> pdaNetPersonInfoList = new ArrayList<PdaNetPersonInfo>();
-                if (netMen != null && netMen.size() > 0) {
-                    for (NetMan info : netMen) {
-                        PdaNetPersonInfo pdaNetPersonInfo = new PdaNetPersonInfo();
-                        pdaNetPersonInfo.setNetPersonId(info.getNetPersonId());
-                        pdaNetPersonInfo.setNetPersonName(info.getNetPersonName());
-                        pdaNetPersonInfo.setNetPersonRFID(info.getNetPersonRFID());
-                        pdaNetPersonInfoList.add(pdaNetPersonInfo);
+                try {
+                    //取出所有款箱
+                    ArrayList<ExtractBoxs> ExtractBoxsList = (ArrayList<ExtractBoxs>) db.queryExtractBoxs();
+                    Map<String, String> ExtractBoxsmap = new HashMap<String, String>();
+                    for (ExtractBoxs ExtractBox : ExtractBoxsList) {
+                        ExtractBox.getRfidNum();
+                        ExtractBox.getBankId();
+                        ExtractBox.getBoxSn();
+                        ExtractBoxsmap.put(ExtractBox.getRfidNum(), ExtractBox.getBoxSn() + "&" + ExtractBox.getBankId());
                     }
+                    pdaLoginMsg.setAllPdaBoxsMap(ExtractBoxsmap);
+                } catch (Exception e) {
+                    Toast.makeText(context, "" + e, Toast.LENGTH_SHORT).show();
                 }
 
-                //取出所有网点信息
-                List<PdaNetPersonInfo> netPersonInfoList = new ArrayList<PdaNetPersonInfo>();
-                List<Extract> extractList = db.queryExtract();
-                for (Extract info : extractList) {
-                    List<NetMan> netMens = db.queryNetManByBankId(info.getBankId());
-                    for (NetMan net : netMens) {
-                        PdaNetPersonInfo pdaNetPersonInfo = new PdaNetPersonInfo();
-                        pdaNetPersonInfo.setNetPersonId(net.getNetPersonId());
-                        pdaNetPersonInfo.setNetPersonName(net.getNetPersonName());
-                        pdaNetPersonInfo.setNetPersonRFID(net.getNetPersonRFID());
-                        netPersonInfoList.add(pdaNetPersonInfo);
+                try {
+                    //取出网点人员
+                    List<NetMan> netMen = db.queryNetMan();
+                    List<PdaNetPersonInfo> pdaNetPersonInfoList = new ArrayList<PdaNetPersonInfo>();
+                    if (netMen != null && netMen.size() > 0) {
+                        for (NetMan info : netMen) {
+                            PdaNetPersonInfo pdaNetPersonInfo = new PdaNetPersonInfo();
+                            pdaNetPersonInfo.setNetPersonId(info.getNetPersonId());
+                            pdaNetPersonInfo.setNetPersonName(info.getNetPersonName());
+                            pdaNetPersonInfo.setNetPersonRFID(info.getNetPersonRFID());
+                            pdaNetPersonInfoList.add(pdaNetPersonInfo);
+                        }
                     }
-                    info.setNetPersonInfoList(netPersonInfoList);
+                }catch (Exception e){
+                    Toast.makeText(context, "" + e, Toast.LENGTH_SHORT).show();
                 }
-                pdaLoginMsg.setExtracts(extractList);
 
-                //取出 押运人员
-                ArrayList<ConvoyMan> manList = (ArrayList<ConvoyMan>) db.queryConvoyMan();
-                List<PdaGuardManInfo> pdaGuarManInfoList = new ArrayList<PdaGuardManInfo>();
-                //存入pdaLoginMessage
-                if (manList != null && manList.size() > 0) {
-                    for (ConvoyMan cMan : manList) {
-                        PdaGuardManInfo manInfo = new PdaGuardManInfo();
-                        manInfo.setGuardManId(cMan.getGuardManId());
-                        manInfo.setGuardManName(cMan.getGuardManName());
-                        manInfo.setGuardManRFID(cMan.getGuardManRFID());
-                        pdaGuarManInfoList.add(manInfo);
+
+                try {
+                    //取出所有网点信息
+                    List<PdaNetPersonInfo> netPersonInfoList = new ArrayList<PdaNetPersonInfo>();
+                    List<Extract> extractList = db.queryExtract();
+                    for (Extract info : extractList) {
+                        List<NetMan> netMens = db.queryNetManByBankId(info.getBankId());
+                        for (NetMan net : netMens) {
+                            PdaNetPersonInfo pdaNetPersonInfo = new PdaNetPersonInfo();
+                            pdaNetPersonInfo.setNetPersonId(net.getNetPersonId());
+                            pdaNetPersonInfo.setNetPersonName(net.getNetPersonName());
+                            pdaNetPersonInfo.setNetPersonRFID(net.getNetPersonRFID());
+                            netPersonInfoList.add(pdaNetPersonInfo);
+                        }
+                        info.setNetPersonInfoList(netPersonInfoList);
                     }
-                    pdaLoginMsg.setPdaGuardManInfo(pdaGuarManInfoList);
+                    pdaLoginMsg.setExtracts(extractList);
+                }catch (Exception e){
+                    Toast.makeText(context, "" + e, Toast.LENGTH_SHORT).show();
+                }
+
+
+                try {
+
+                    //取出 押运人员
+                    ArrayList<ConvoyMan> manList = (ArrayList<ConvoyMan>) db.queryConvoyMan();
+                    List<PdaGuardManInfo> pdaGuarManInfoList = new ArrayList<PdaGuardManInfo>();
+                    //存入pdaLoginMessage
+                    if (manList != null && manList.size() > 0) {
+                        for (ConvoyMan cMan : manList) {
+                            PdaGuardManInfo manInfo = new PdaGuardManInfo();
+                            manInfo.setGuardManId(cMan.getGuardManId());
+                            manInfo.setGuardManName(cMan.getGuardManName());
+                            manInfo.setGuardManRFID(cMan.getGuardManRFID());
+                            pdaGuarManInfoList.add(manInfo);
+                        }
+                        pdaLoginMsg.setPdaGuardManInfo(pdaGuarManInfoList);
+                    }
+                }catch (Exception e){
+                    Toast.makeText(context, "" + e, Toast.LENGTH_SHORT).show();
                 }
 
 

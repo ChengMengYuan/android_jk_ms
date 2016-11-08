@@ -103,11 +103,11 @@ public class DetailActivity extends Activity {
     private Handler mHandler;
     private static final int MSG_UPDATE_LISTVIEW = 0;
     private Map<String, Integer> data;
-    static HashMap<String, Object> boxesMap1 = null;//保存正确款箱map
-    static HashMap<String, Object> boxesMap2 = null;//保存多处的款箱map
-    static HashMap<String, Object> boxesMap3 = null;//保存错误的款箱map
-    static PdaNetPersonInfo netPersonInfo = null;//保存网点人员
-    static PdaGuardManInfo guardManInfo = null;//保存押运人员
+    private static HashMap<String, Object> boxesMap1 = null;//保存正确款箱map
+    private static HashMap<String, Object> boxesMap2 = null;//保存多处的款箱map
+    private static HashMap<String, Object> boxesMap3 = null;//保存错误的款箱map
+    private static PdaNetPersonInfo netPersonInfo = null;//保存网点人员
+    private static PdaGuardManInfo guardManInfo = null;//保存押运人员
 
     private String branchCode = null;
     private String branchId = null;
@@ -271,7 +271,6 @@ public class DetailActivity extends Activity {
                                                 HashMap<String, Object> map1 = new HashMap<String, Object>();
                                                 map1.put("list_img", R.drawable.boxes_list_status_1);
                                                 map1.put("list_title", extractBoxs.getBoxSn());
-                                                Log.i("getBoxSn====", "===" + extractBoxs.getBoxSn());
                                                 boxesMap2.put(key, map1);
                                                 listItem.add(map1);
                                             }
@@ -338,7 +337,6 @@ public class DetailActivity extends Activity {
     }
 
     private void startDevices() {
-        Log.i("!!!!!!!!!!!!!!!!!", "!!!!!!!!!!!!!!!!!!!");
         if (!UfhData.isDeviceOpen()) {
             Toast.makeText(this, R.string.detail_title, Toast.LENGTH_LONG).show();
             return;

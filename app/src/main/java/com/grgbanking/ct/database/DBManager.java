@@ -26,8 +26,9 @@ public class DBManager {
     private SQLiteDatabase db;
 
     public DBManager(Context context) {
-        helper = new DBHelper(context, db);
+        helper = new DBHelper(context);
     }
+
 
     /**
      * add convoyMan
@@ -312,23 +313,28 @@ public class DBManager {
      */
 
     public List<ExtractBoxs> queryExtractBoxs() {
-        SQLiteDatabase db = helper.getWritableDatabase();
-        ArrayList<ExtractBoxs> ExtractBoxsList = new ArrayList<ExtractBoxs>();
-        Cursor c = db.rawQuery("SELECT * FROM ExtractBoxs", null);
-        c.moveToFirst();
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-                    ExtractBoxs boxs = new ExtractBoxs();
-                    boxs.setRfidNum(c.getString(0));
-                    boxs.setBankId(c.getString(1));
-                    boxs.setBoxSn(c.getString(2));
-                    ExtractBoxsList.add(boxs);
-                } while (c.moveToNext());
+        try {
+            SQLiteDatabase db = helper.getWritableDatabase();
+            ArrayList<ExtractBoxs> ExtractBoxsList = new ArrayList<ExtractBoxs>();
+            Cursor c = db.rawQuery("SELECT * FROM ExtractBoxs", null);
+            c.moveToFirst();
+            if (c != null) {
+                if (c.moveToFirst()) {
+                    do {
+                        ExtractBoxs boxs = new ExtractBoxs();
+                        boxs.setRfidNum(c.getString(0));
+                        boxs.setBankId(c.getString(1));
+                        boxs.setBoxSn(c.getString(2));
+                        ExtractBoxsList.add(boxs);
+                    } while (c.moveToNext());
+                }
             }
+
+            return ExtractBoxsList;
+        } catch (Exception e) {
+            return null;
         }
 
-        return ExtractBoxsList;
     }
 
     /**
@@ -665,18 +671,23 @@ public class DBManager {
     }
 
     public void delete() {
-        db = helper.getWritableDatabase();
-        db.delete(DBHelper.TABLE_ConvoyMan_NAME, null, null);
-        db.delete(DBHelper.TABLE_NetMan_NAME, null, null);
-        db.delete(DBHelper.TABLE_NetTask_NAME, null, null);
-        db.delete(DBHelper.TABLE_PdaNetInfo_NAME, null, null);
-        db.delete(DBHelper.TABLE_PdaCashboxInfo_NAME, null, null);
-        db.delete(DBHelper.TABLE_LoginMan_NAME, null, null);
-        db.delete(DBHelper.TABLE_RECORDNET_NAME, null, null);
-        db.delete(DBHelper.TABLE_WATERNET_NAME, null, null);
-        db.delete(DBHelper.TABLE_EXTRACT_NAME, null, null);
-        db.delete(DBHelper.TABLE_EXTRACTBOXS_NAME, null, null);
-        db.close();
+        try {
+            db = helper.getWritableDatabase();
+            db.delete(DBHelper.TABLE_ConvoyMan_NAME, null, null);
+            db.delete(DBHelper.TABLE_NetMan_NAME, null, null);
+            db.delete(DBHelper.TABLE_NetTask_NAME, null, null);
+            db.delete(DBHelper.TABLE_PdaNetInfo_NAME, null, null);
+            db.delete(DBHelper.TABLE_PdaCashboxInfo_NAME, null, null);
+            db.delete(DBHelper.TABLE_LoginMan_NAME, null, null);
+            db.delete(DBHelper.TABLE_RECORDNET_NAME, null, null);
+            db.delete(DBHelper.TABLE_WATERNET_NAME, null, null);
+            db.delete(DBHelper.TABLE_EXTRACT_NAME, null, null);
+            db.delete(DBHelper.TABLE_EXTRACTBOXS_NAME, null, null);
+            db.close();
+        } catch (Exception e) {
+            Log.e("DBManager", "" + e);
+        }
+
         //        db.endTransaction();//结束事物
     }
 }

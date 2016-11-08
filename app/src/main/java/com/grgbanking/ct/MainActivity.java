@@ -70,10 +70,15 @@ public class MainActivity extends Activity {
         popupMenu = new PopupMenu(this, findViewById(R.id.popupmenu_btn));
         menu = popupMenu.getMenu();
 
-        //接收数据
-        pdaLoginMsg = (PdaLoginMsg) getIntent().getSerializableExtra("pdaLoginMsg");
-        //放入缓存
-        DataCach.setPdaLoginMsg(pdaLoginMsg);
+        try {
+            //接收数据
+            pdaLoginMsg = (PdaLoginMsg) getIntent().getSerializableExtra("pdaLoginMsg");
+            //放入缓存
+            DataCach.setPdaLoginMsg(pdaLoginMsg);
+        } catch (Exception e) {
+            Toast.makeText(context, "" + e, Toast.LENGTH_SHORT).show();
+        }
+
 
 
         // 通过XML文件添加菜单项
@@ -110,8 +115,12 @@ public class MainActivity extends Activity {
         //		params.add(new BasicNameValuePair("userId", userId));
         showWaitDialog("正在加载中...");
 
+        try {
+            loadLoginMessageCach();
+        } catch (Exception e) {
+            Toast.makeText(context, "" + e, Toast.LENGTH_SHORT).show();
+        }
 
-        loadLoginMessageCach();
 
         hideWaitDialog();
 

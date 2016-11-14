@@ -76,13 +76,20 @@ import static com.grgbanking.ct.cach.DataCach.pdaLoginMsg;
 @SuppressLint("NewApi")
 public class DetailActivity extends Activity {
 
-    private Context context;
-    private EditText remarkEditView;
+    private static final int SCAN_INTERVAL = 10;
+    private static final int MSG_UPDATE_LISTVIEW = 0;
+    private static final int IMAGE_REQUEST_CODE = 0; // 选择本地图片
+    private static final int CAMERA_REQUEST_CODE = 1; // 拍照
+    private static final String IMAGE_FILE_NAME = "faceImage.jpg";
+    private static HashMap<String, Object> boxesMap1 = null;//保存正确款箱map
+    private static HashMap<String, Object> boxesMap2 = null;//保存多处的款箱map
+    private static HashMap<String, Object> boxesMap3 = null;//保存错误的款箱map
+    private static PdaNetPersonInfo netPersonInfo = null;//保存网点人员
+    private static PdaGuardManInfo guardManInfo = null;//保存押运人员
     TextView positionTextView = null;
     TextView branchNameTextView = null;
     Button commitYesButton = null;
     Button commitNoButton = null;
-
     TextView detailTitleTextView = null;
     Button connDeviceButton = null;
     Button startDeviceButton = null;
@@ -91,35 +98,127 @@ public class DetailActivity extends Activity {
     ListView deviceListView;
     SimpleAdapter listItemAdapter;
     ArrayList<HashMap<String, Object>> listItem;
-
-
+    private Context context;
+    private EditText remarkEditView;
     private int tty_speed = 57600;
     private byte addr = (byte) 0xff;
-
     private Timer timer;
     private boolean Scanflag = false;
-    private static final int SCAN_INTERVAL = 10;
     private boolean isCanceled = true;
     private Handler mHandler;
-    private static final int MSG_UPDATE_LISTVIEW = 0;
     private Map<String, Integer> data;
-    private static HashMap<String, Object> boxesMap1 = null;//保存正确款箱map
-    private static HashMap<String, Object> boxesMap2 = null;//保存多处的款箱map
-    private static HashMap<String, Object> boxesMap3 = null;//保存错误的款箱map
-    private static PdaNetPersonInfo netPersonInfo = null;//保存网点人员
-    private static PdaGuardManInfo guardManInfo = null;//保存押运人员
-
     private String branchCode = null;
     private String branchId = null;
     private String imageUrl = null;// 上传成功后的图片URL
-
     private String address;
     private double latitude;
     private double longitude;
-
     private boolean uploadFlag = false;
     private ProgressDialog pd = null;
+    OnClickListener click = new OnClickListener() {
+        @Override
+        public void onClick(View arg0) {
+            String context = startDeviceButton.getText().toString();
+            switch (arg0.getId()) {
+                case R.id.detail_btn_back:
+                    if (context.equals("Stop")) {
+                        Toast.makeText(DetailActivity.this, "请先停止扫描", Toast.LENGTH_LONG).show();
+                    } else {
+                        backListPage();
+                    }
+                    break;
+                //			case R.id.detail_btn_commit_y:
+                //				doCommit("Y");
+                //				break;
+                case R.id.detail_btn_commit_n:
+                    //				if (uploadFlag) {
+                    //					doCommit("N");
+                    //				} else {
+                    //					Toast.makeText(DetailActivity.this, "图片正在上传中，请稍等。", Toast.LENGTH_LONG)
+                    //							.show();
+                    //				}
+                    if (context.equals("Stop")) {
+                        Toast.makeText(DetailActivity.this, "请先停止扫描", Toast.LENGTH_LONG).show();
+                    } else {
+                        dialog();
+                    }
+                    break;
+                //			case R.id.add_photo:
+                //				doAddPhoto();
+                //				break;
+
+                case R.id.button1:
+                    //连接设备
+                    connDevices();
+
+                    break;
+                case R.id.Button01:
+                    //启动设备
+                    if (!context.equals("Stop")) {
+                        loadDevices();
+                    }
+
+                    startDevices();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
     private Person person = null;
+
+    /**
+     * 计算图片的缩放值
+     *
+     * @param options
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
+    public static int calculateInSampleSize(BitmapFactory.Options options,
+                                            int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            // Calculate ratios of height and width to requested height and
+            // width
+            final int heightRatio = Math.round((float) height
+                    / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+
+            // Choose the smallest ratio as inSampleSize value, this will
+            // guarantee
+            // a final image with both dimensions larger than or equal to the
+            // requested height and width.
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+
+        return inSampleSize;
+    }
+
+    /**
+     * 根据路径获得突破并压缩返回bitmap用于显示
+     *
+     * @param
+     * @return
+     */
+    public static Bitmap getSmallBitmap(String filePath) {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, 480, 800);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+
+        return BitmapFactory.decodeFile(filePath, options);
+    }
 
     private void showWaitDialog(String msg) {
         if (pd == null) {
@@ -177,7 +276,6 @@ public class DetailActivity extends Activity {
         // 点击添加照片按钮操作内容
         //		findViewById(R.id.add_photo).setOnClickListener(click);
     }
-
 
     private void flashInfo() {
         mHandler = new Handler() {
@@ -323,7 +421,6 @@ public class DetailActivity extends Activity {
         };
     }
 
-
     private void connDevices() {
         int result = UhfGetData.OpenUhf(tty_speed, addr, 4, 1, null);
         if (result == 0) {
@@ -460,62 +557,10 @@ public class DetailActivity extends Activity {
         listItemAdapter.notifyDataSetChanged();
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
     }
-
-    OnClickListener click = new OnClickListener() {
-        @Override
-        public void onClick(View arg0) {
-            String context = startDeviceButton.getText().toString();
-            switch (arg0.getId()) {
-                case R.id.detail_btn_back:
-                    if (context.equals("Stop")) {
-                        Toast.makeText(DetailActivity.this, "请先停止扫描", Toast.LENGTH_LONG).show();
-                    } else {
-                        backListPage();
-                    }
-                    break;
-                //			case R.id.detail_btn_commit_y:
-                //				doCommit("Y");
-                //				break;
-                case R.id.detail_btn_commit_n:
-                    //				if (uploadFlag) {
-                    //					doCommit("N");
-                    //				} else {
-                    //					Toast.makeText(DetailActivity.this, "图片正在上传中，请稍等。", Toast.LENGTH_LONG)
-                    //							.show();
-                    //				}
-                    if (context.equals("Stop")) {
-                        Toast.makeText(DetailActivity.this, "请先停止扫描", Toast.LENGTH_LONG).show();
-                    } else {
-                        dialog();
-                    }
-                    break;
-                //			case R.id.add_photo:
-                //				doAddPhoto();
-                //				break;
-
-                case R.id.button1:
-                    //连接设备
-                    connDevices();
-
-                    break;
-                case R.id.Button01:
-                    //启动设备
-                    if (!context.equals("Stop")) {
-                        loadDevices();
-                    }
-
-                    startDevices();
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
 
     protected void dialog() {
         //	    通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
@@ -829,7 +874,6 @@ public class DetailActivity extends Activity {
         finish();
     }
 
-
     void doCommit(String flag) {
 
         if (address == null || "".equals(address)) {
@@ -842,7 +886,7 @@ public class DetailActivity extends Activity {
         String remark = remarkEditView.getText().toString();
         String status = flag;
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-//        params.add(new BasicNameValuePair("userid", person.getUser_id()));
+        //        params.add(new BasicNameValuePair("userid", person.getUser_id()));
         params.add(new BasicNameValuePair("name", person.getUser_name()));
 
         params.add(new BasicNameValuePair("branchId", branchId));
@@ -897,10 +941,6 @@ public class DetailActivity extends Activity {
                 }).create();
         dlg.show();
     }
-
-    private static final int IMAGE_REQUEST_CODE = 0; // 选择本地图片
-    private static final int CAMERA_REQUEST_CODE = 1; // 拍照
-    private static final String IMAGE_FILE_NAME = "faceImage.jpg";
 
     /**
      * 拍照
@@ -1106,59 +1146,6 @@ public class DetailActivity extends Activity {
             }
         });
         locationClient.start();
-    }
-
-    /**
-     * 计算图片的缩放值
-     *
-     * @param options
-     * @param reqWidth
-     * @param reqHeight
-     * @return
-     */
-    public static int calculateInSampleSize(BitmapFactory.Options options,
-                                            int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            // Calculate ratios of height and width to requested height and
-            // width
-            final int heightRatio = Math.round((float) height
-                    / (float) reqHeight);
-            final int widthRatio = Math.round((float) width / (float) reqWidth);
-
-            // Choose the smallest ratio as inSampleSize value, this will
-            // guarantee
-            // a final image with both dimensions larger than or equal to the
-            // requested height and width.
-            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
-        }
-
-        return inSampleSize;
-    }
-
-    /**
-     * 根据路径获得突破并压缩返回bitmap用于显示
-     *
-     * @param
-     * @return
-     */
-    public static Bitmap getSmallBitmap(String filePath) {
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(filePath, options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, 480, 800);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-
-        return BitmapFactory.decodeFile(filePath, options);
     }
 }
 

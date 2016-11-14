@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.grgbanking.ct.qcode.QcodeActivity;
+
 /**
  * Created by Administrator on 2016/7/13.
  */
@@ -29,7 +31,7 @@ public class PeixiangActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.setClass(PeixiangActivity.this, QcodeActivity.class);
+                intent.setClass(PeixiangActivity.this,QcodeActivity.class);
                 startActivity(intent);
                 finish();
             }

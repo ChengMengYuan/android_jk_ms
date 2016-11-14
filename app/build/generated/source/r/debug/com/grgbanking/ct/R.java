@@ -184,6 +184,7 @@ public final class R {
         public static final int capture_preview=0x7f080012;
         public static final int capture_scan_line=0x7f080014;
         public static final int cb=0x7f080028;
+        public static final int close=0x7f080052;
         public static final int code=0x7f080045;
         public static final int content_layout=0x7f080025;
         public static final int cpature_title=0x7f080011;
@@ -199,8 +200,8 @@ public final class R {
         public static final int encode_failed=0x7f080005;
         public static final int encode_succeeded=0x7f080006;
         public static final int gridview=0x7f080007;
-        public static final int item_back=0x7f08004f;
-        public static final int item_refresh=0x7f080050;
+        public static final int item_back=0x7f080054;
+        public static final int item_refresh=0x7f080055;
         public static final int launch_product_query=0x7f080008;
         public static final int list_boxes_img=0x7f080017;
         public static final int list_boxes_title=0x7f080018;
@@ -213,6 +214,7 @@ public final class R {
         public static final int main_bar=0x7f08002c;
         public static final int main_btn_back=0x7f08002f;
         public static final int main_title_view=0x7f08002d;
+        public static final int manager=0x7f080053;
         public static final int miniTwitter_logo=0x7f080029;
         public static final int net_out_button=0x7f08003a;
         public static final int net_sysout_view=0x7f080036;
@@ -239,6 +241,8 @@ public final class R {
         public static final int quit=0x7f080009;
         public static final int restart_preview=0x7f08000a;
         public static final int return_scan_result=0x7f08000b;
+        public static final int scan=0x7f080051;
+        public static final int scan_result=0x7f080050;
         public static final int search_book_contents_failed=0x7f08000c;
         public static final int search_book_contents_succeeded=0x7f08000d;
         public static final int split=0x7f08000e;
@@ -251,6 +255,7 @@ public final class R {
         public static final int title_layout=0x7f080019;
         public static final int up_button=0x7f08003c;
         public static final int username_edit=0x7f080026;
+        public static final int wcccamera_title=0x7f08004f;
         public static final int webview=0x7f08000f;
     }
     public static final class layout {
@@ -268,6 +273,7 @@ public final class R {
         public static final int progress=0x7f03000b;
         public static final int qcode_activity=0x7f03000c;
         public static final int qcode_list=0x7f03000d;
+        public static final int sacn_activity=0x7f03000e;
     }
     public static final class menu {
         public static final int popupmenu=0x7f0a0000;

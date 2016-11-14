@@ -17,6 +17,8 @@ public class DataCach {
     private static PdaLoginMessage pdaLoginMessage = null;
     public static LinkedHashMap<String, HashMap<String, Object>> boxesMap = new LinkedHashMap<String, HashMap<String, Object>>();
     public static PdaLoginMsg pdaLoginMsg = null;
+    public static HashMap<String,String> codeMap = new HashMap<String,String>();
+
 
     public static void setPdaLoginMsg(PdaLoginMsg pdaLoginMsg) {
         if (DataCach.pdaLoginMsg != null) {

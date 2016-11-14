@@ -75,7 +75,10 @@
             android:name="com.grgbanking.ct.PeixiangdtActivity"
             android:label="@string/app_name" />
         <activity
-            android:name="com.grgbanking.ct.QcodeActivity"
+            android:name="com.grgbanking.ct.qcode.QcodeActivity"
+            android:label="华联创通" />
+        <activity
+            android:name="com.grgbanking.ct.qcode.ScanActivity"
             android:label="华联创通" />
 
         <service android:name="com.grgbanking.ct.service.GrgbankService" />

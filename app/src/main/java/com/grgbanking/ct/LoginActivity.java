@@ -29,9 +29,7 @@ import com.grgbanking.ct.cach.DataCach;
 import com.grgbanking.ct.database.DBManager;
 import com.grgbanking.ct.database.Person;
 import com.grgbanking.ct.entity.LoginUser;
-import com.grgbanking.ct.http.HttpPostUtils;
 import com.grgbanking.ct.http.ResultInfo;
-import com.grgbanking.ct.http.UICallBackDao;
 import com.grgbanking.ct.update.CheckUpdateInfos;
 import com.grgbanking.ct.utils.IntenetUtil;
 import com.grgbanking.ct.utils.StringTools;
@@ -174,39 +172,45 @@ public class LoginActivity extends Activity {
      * 使用wifi连接的情况下，访问后台服务器进行登录操作
      */
     private void wifiLogin() {
-        //访问后台服务器进行登录操作
-        new HttpPostUtils(Constants.URL_PDA_LOGIN, params, new UICallBackDao() {
-            @Override
-            public void callBack(ResultInfo resultInfo) {
-                Log.i(TAG, "use wifi to logining");
-                if (resultInfo.getCode() != null && !resultInfo.getCode().isEmpty()) {
-                    //押运人员
-                    if (ResultInfo.CODE_GUARDMANIINFO.equals(resultInfo.getCode())) {
-                        success();
-                        Intent intent = new Intent();
-                        intent.setClass(LoginActivity.this, NetOutInActivity.class);
-                        startActivity(intent);
-                        finish();
-                        //配箱人员
-                    } else if (ResultInfo.CODE_PEIXIANG.equals(resultInfo.getCode())) {
-                        success();
-                        Intent intent = new Intent();
-                        intent.setClass(LoginActivity.this, PeixiangActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                    //帐号密码错误
-                    else {
-                        Toast.makeText(context, resultInfo.getMessage(), Toast.LENGTH_SHORT).show();
-                        loginButtonView.setText("登录");
-                    }
-                } else {
-                    Toast.makeText(context, resultInfo.getMessage(), Toast.LENGTH_SHORT).show();
-                    loginButtonView.setText("登录");
-                }
-            }
-        }).execute();
+        Intent intent = new Intent();
+        intent.setClass(LoginActivity.this, PeixiangActivity.class);
+        startActivity(intent);
+        finish();
     }
+//    private void wifiLogin() {
+//        //访问后台服务器进行登录操作
+//        new HttpPostUtils(Constants.URL_PDA_LOGIN, params, new UICallBackDao() {
+//            @Override
+//            public void callBack(ResultInfo resultInfo) {
+//                Log.i(TAG, "use wifi to logining");
+//                if (resultInfo.getCode() != null && !resultInfo.getCode().isEmpty()) {
+//                    //押运人员
+//                    if (ResultInfo.CODE_GUARDMANIINFO.equals(resultInfo.getCode())) {
+//                        success();
+//                        Intent intent = new Intent();
+//                        intent.setClass(LoginActivity.this, NetOutInActivity.class);
+//                        startActivity(intent);
+//                        finish();
+//                        //配箱人员
+//                    } else if (ResultInfo.CODE_PEIXIANG.equals(resultInfo.getCode())) {
+//                        success();
+//                        Intent intent = new Intent();
+//                        intent.setClass(LoginActivity.this, PeixiangActivity.class);
+//                        startActivity(intent);
+//                        finish();
+//                    }
+//                    //帐号密码错误
+//                    else {
+//                        Toast.makeText(context, resultInfo.getMessage(), Toast.LENGTH_SHORT).show();
+//                        loginButtonView.setText("登录");
+//                    }
+//                } else {
+//                    Toast.makeText(context, resultInfo.getMessage(), Toast.LENGTH_SHORT).show();
+//                    loginButtonView.setText("登录");
+//                }
+//            }
+//        }).execute();
+//    }
 
     /*
      * findViewById.

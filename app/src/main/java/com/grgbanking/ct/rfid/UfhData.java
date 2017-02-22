@@ -374,7 +374,6 @@ public class UfhData {
 			return null;
 		}
 		private static void append(String hex) {
-			// TODO Auto-generated method stub
 
 		}
 

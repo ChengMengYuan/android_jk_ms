@@ -46,17 +46,30 @@ public class MainActivity extends Activity {
 
     PopupMenu popupMenu;
     Menu menu;
-
-    private SharedPreferences sp;
     ListView listView;
     ImageView saomiaoImageView;
     SimpleAdapter listItemAdapter;
     ArrayList<HashMap<String, Object>> listItem;
     Person person = null;
-    private Context context;
     TextView mainTitle;
     Button mainBackButton = null;
+    OnClickListener saomiaoButtonclick = new OnClickListener() {
+        @Override
+        public void onClick(View arg0) {
+            //			startActivity(new Intent(getApplicationContext(), CaptureActivity.class));
+            //清空缓存
+            DataCach.clearAllDataCach();
+
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    };
+    private SharedPreferences sp;
+    private Context context;
     private PdaLoginMsg pdaLoginMsg;
+    private ProgressDialog pd = null;
 
     @SuppressLint("NewApi")
     @Override
@@ -78,7 +91,6 @@ public class MainActivity extends Activity {
         } catch (Exception e) {
             Toast.makeText(context, "" + e, Toast.LENGTH_SHORT).show();
         }
-
 
 
         // 通过XML文件添加菜单项
@@ -202,7 +214,6 @@ public class MainActivity extends Activity {
                     List<PdaNetInfo> netInfoList = pdaLoginMsg.getNetInfoList();
                     if (netInfoList != null && netInfoList.size() > 0) {
                         for (int i = 0; i < netInfoList.size(); i++) {
-
                             PdaNetInfo pni = netInfoList.get(i);
                             String bankId = pni.getBankId();
                             String bankName = pni.getBankName();
@@ -353,8 +364,6 @@ public class MainActivity extends Activity {
         listItemAdapter.notifyDataSetChanged();
     }
 
-    private ProgressDialog pd = null;
-
     private void showWaitDialog(String msg) {
         if (pd == null) {
             pd = new ProgressDialog(this);
@@ -369,19 +378,4 @@ public class MainActivity extends Activity {
             pd.cancel();
         }
     }
-
-
-    OnClickListener saomiaoButtonclick = new OnClickListener() {
-        @Override
-        public void onClick(View arg0) {
-            //			startActivity(new Intent(getApplicationContext(), CaptureActivity.class));
-            //清空缓存
-            DataCach.clearAllDataCach();
-
-            Intent intent = new Intent();
-            intent.setClass(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        }
-    };
 }

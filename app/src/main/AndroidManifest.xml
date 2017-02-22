@@ -79,6 +79,9 @@
         <activity
             android:name=".qcode.ScanActivity"
             android:label="华联创通"/>
+        <activity
+            android:name=".utils.StatActivity"
+            android:label="华联创通"/>
 
         <service android:name="com.grgbanking.ct.service.GrgbankService"/>
 

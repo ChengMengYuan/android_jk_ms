@@ -77,7 +77,6 @@
 //        BT_stop.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                // TODO: 2016/10/25 停止扫描
 //                cancelScan();
 //                UfhData.Set_sound(false);
 //            }
@@ -251,7 +250,6 @@
 //         */
 //        @Override
 //        public int getCount() {
-//            // FIXME: 2016/11/9
 //            return 1;
 //        }
 //

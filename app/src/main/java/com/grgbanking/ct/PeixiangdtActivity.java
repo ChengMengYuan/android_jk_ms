@@ -44,8 +44,12 @@ import java.util.TimerTask;
  */
 public class PeixiangdtActivity extends Activity {
 
+    private static final int MSG_UPDATE_LISTVIEW = 0;
+    private static final int SCAN_INTERVAL = 10;
     static PdaNetPersonInfo netPersonInfo = null;//保存箱包号
     static PdaGuardManInfo guardManInfo = null;//保存配钞人员
+    SimpleAdapter listItemAdapter;
+    ArrayList<HashMap<String, Object>> listItem;
     private Button PeixiangDtBack;
     private Button PeixiangDtCommit;
     private TextView PeixiangDtName;
@@ -53,8 +57,18 @@ public class PeixiangdtActivity extends Activity {
     private Button PeixiangDTConnect;
     private Button PeixiangDtScan;
     private ListView peixiangListView;
-    SimpleAdapter listItemAdapter;
-    ArrayList<HashMap<String, Object>> listItem;
+    private Timer timer;
+    private boolean isCanceled = true;
+    private boolean Scanflag = false;
+    private Handler mHandler;
+    private Map<String, Integer> data;
+    private int tty_speed = 57600;
+    private byte addr = (byte) 0xff;
+    /**
+     * @param msg
+     * 等待时的Dialog
+     */
+    private ProgressDialog pd = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +80,11 @@ public class PeixiangdtActivity extends Activity {
         findViewById();
         setOnClickListener();
 
-//         生成动态数组，加入数据
-//        listItem = new ArrayList<HashMap<String, Object>>();
-//         生成适配器的Item和动态数组对应的元素
+        //         生成动态数组，加入数据
+        //        listItem = new ArrayList<HashMap<String, Object>>();
+        //         生成适配器的Item和动态数组对应的元素
         listItemAdapter = new SimpleAdapter(this, listItem, R.layout.peixiangdt_list_item, new String[]{"code"}, new int[]{R.id.code});
-//         添加并且显示
+        //         添加并且显示
         peixiangListView.setAdapter(listItemAdapter);
 
 
@@ -78,7 +92,8 @@ public class PeixiangdtActivity extends Activity {
         flashInfo();
 
     }
-    private void findViewById(){
+
+    private void findViewById() {
         PeixiangDtBack = (Button) findViewById(R.id.peixiangdetail_btn_back);
         PeixiangDtCommit = (Button) findViewById(R.id.peixiangdetail_btn_commit);
         PeixiangDtName = (TextView) findViewById(R.id.peixiangdetail_tv_name);
@@ -88,7 +103,7 @@ public class PeixiangdtActivity extends Activity {
         peixiangListView = (ListView) findViewById(R.id.peixiang_ListView);
     }
 
-    private void setOnClickListener(){
+    private void setOnClickListener() {
         PeixiangDtCommit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,22 +130,14 @@ public class PeixiangdtActivity extends Activity {
         });
     }
 
-
-    private Timer timer;
-    private boolean isCanceled = true;
-    private boolean Scanflag = false;
-    private Handler mHandler;
-    private static final int MSG_UPDATE_LISTVIEW = 0;
-    private static final int SCAN_INTERVAL = 10;
-
     /**
      * 启动扫描
      */
     private void scan() {
-//        showWaitDialog("正在扫描中");
-        Log.v("正在启动扫描","1");
+        //        showWaitDialog("正在扫描中");
+        Log.v("正在启动扫描", "1");
         if (!UfhData.isDeviceOpen()) {
-//            hideWaitDialog();
+            //            hideWaitDialog();
             Toast.makeText(PeixiangdtActivity.this, "请先连接设备", Toast.LENGTH_LONG).show();
             return;
         }
@@ -141,7 +148,8 @@ public class PeixiangdtActivity extends Activity {
             timer = new Timer();
             timer.schedule(new TimerTask() {
                 public void run() {
-                    if (Scanflag) return;
+                    if (Scanflag)
+                        return;
                     Scanflag = true;
 
                     Log.i("zhouxin", "------onclick-------6c");
@@ -154,14 +162,11 @@ public class PeixiangdtActivity extends Activity {
             PeixiangDtScan.setText("Stop");
         } else {
             cancelScan();
-            Log.v("取消扫描","");
+            Log.v("取消扫描", "");
             UfhData.Set_sound(false);
         }
-            Log.v("扫描完成","");
+        Log.v("扫描完成", "");
     }
-
-
-    private Map<String, Integer> data;
 
     /**
      * 启动RFID扫描功能刷新扫描款箱数据
@@ -170,11 +175,12 @@ public class PeixiangdtActivity extends Activity {
         mHandler = new Handler() {
 
             public void handleMessage(Message msg) {
-                if (isCanceled) return;
+                if (isCanceled)
+                    return;
                 switch (msg.what) {
                     case MSG_UPDATE_LISTVIEW:
                         data = UfhData.scanResult6c;
-                        Log.v("data:",""+data);
+                        Log.v("data:", "" + data);
                         String name = PeixiangDtName.getText().toString();
                         String number = PeixiangDTNumber.getText().toString();
 
@@ -185,7 +191,7 @@ public class PeixiangdtActivity extends Activity {
                             if (key.indexOf(Constants.PRE_RFID_GUARD) != -1) {//获取配钞人员
                                 if (name.trim().equals("")) {
                                     PdaLoginMessage plm = DataCach.getPdaLoginMessage();
-                                    Log.v("plm",""+plm);
+                                    Log.v("plm", "" + plm);
                                     if (plm != null) {
                                         List<PdaGuardManInfo> guardManInfoList = plm.getGuardManInfoList();
                                         if (guardManInfoList != null && guardManInfoList.size() > 0) {
@@ -206,7 +212,7 @@ public class PeixiangdtActivity extends Activity {
                                     int count = bundle.getInt("count");
                                     HashMap<String, Object> map = DataCach.taskMap.get(count + "");
                                     PdaNetInfo pni = (PdaNetInfo) map.get("data");
-                                    Log.v("pni",""+pni);
+                                    Log.v("pni", "" + pni);
                                     if (pni != null) {
                                         List<PdaNetPersonInfo> netPersonInfolist = pni.getNetPersonInfoList();
                                         if (netPersonInfolist != null && netPersonInfolist.size() > 0) {
@@ -220,7 +226,7 @@ public class PeixiangdtActivity extends Activity {
                                         }
                                     }
                                 }
-                            }else if(key.indexOf(Constants.NET_TASK_STATUS_FINISH)!=-1){//获取二维码字符串（）
+                            } else if (key.indexOf(Constants.NET_TASK_STATUS_FINISH) != -1) {//获取二维码字符串（）
 
                             }
                         }
@@ -242,10 +248,6 @@ public class PeixiangdtActivity extends Activity {
             UfhData.scanResult6c.clear();
         }
     }
-
-
-    private int tty_speed = 57600;
-    private byte addr = (byte) 0xff;
 
     /**
      * 连接设备
@@ -323,13 +325,6 @@ public class PeixiangdtActivity extends Activity {
             }).execute();
         }
     }
-
-
-    /**
-     * @param msg
-     * 等待时的Dialog
-     */
-    private ProgressDialog pd = null;
 
     private void showWaitDialog(String msg) {
         if (pd == null) {

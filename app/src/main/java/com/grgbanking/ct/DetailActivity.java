@@ -303,7 +303,6 @@ public class DetailActivity extends Activity {
                                     //                                    PdaLoginMessage plm = DataCach.getPdaLoginMessage();
                                     if (plm != null) {
                                         List<PdaGuardManInfo> guardManInfoList = plm.getPdaGuardManInfo();
-                                        Log.i("========", "=+++++++=" + guardManInfoList.size());
                                         if (guardManInfoList != null && guardManInfoList.size() > 0) {
                                             for (PdaGuardManInfo info : guardManInfoList) {
                                                 if (info.getGuardManRFID().equals(key)) {
@@ -515,6 +514,7 @@ public class DetailActivity extends Activity {
         boxesMap3 = new HashMap<String, Object>();
         netPersonInfo = null;
         guardManInfo = null;
+//        listItem.clear();
         listItem.removeAll(listItem);
 
 
@@ -592,7 +592,6 @@ public class DetailActivity extends Activity {
                 Date curDate = new Date(System.currentTimeMillis());
                 String date = format.format(curDate);
 
-                // FIXME: 2016/11/2 null
                 //线路名称
                 recordnet.setLineSn(pdaLoginMsg.getLineSn());
 
@@ -608,7 +607,6 @@ public class DetailActivity extends Activity {
                 //押运人员名称
                 recordnet.setGuardman(person1TextView.getText().toString());
 
-                // FIXME: 2016/11/2 null
                 //1:网点入库 ； 0：网点出库
                 recordnet.setLineType(DataCach.netType);
 
@@ -888,7 +886,6 @@ public class DetailActivity extends Activity {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         //        params.add(new BasicNameValuePair("userid", person.getUser_id()));
         params.add(new BasicNameValuePair("name", person.getUser_name()));
-
         params.add(new BasicNameValuePair("branchId", branchId));
         params.add(new BasicNameValuePair("remark", remark));
         params.add(new BasicNameValuePair("status", status));
@@ -1148,6 +1145,3 @@ public class DetailActivity extends Activity {
         locationClient.start();
     }
 }
-
-// TODO: 2016/11/2  1、禁止自动停止扫描 2、保存数据库的时候保存所有扫描到的数据 3、组装数据并且提交两张表内的所有数据 4、新建出库任务表 5、网点出库任务列表展示 6、网点出库任务详情改动 7、保存提交 8、二维码扫描item数据展示 9、二维码扫描数据库创建添加修改提交 10、结束Activity的时候停止扫描
-// FIXME: 2016/11/3 1、查询时候do while循环 2、提交完成后更改数据状态避免无法完成任务。3,提交时押运人员网点人员不能为空

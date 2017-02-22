@@ -9,6 +9,17 @@ package com.grgbanking.ct.scan;
 
 public class Waternet {
     private int id;//自增ID
+    private int scanningNetid; //这个表b_scanning_recordnet 的外键
+    private String boxSn; //箱包名称
+    private String boxId; //箱包ID
+    private String bankId;//网点ID
+    private String scanningDate;//日期
+    private String status; //0:正确入库   1：错误入库  2：遗漏
+    private String ScanningType;//1:网点入库 ； 0：网点出库
+
+    public Waternet() {
+
+    }
 
     public int getId() {
         return id;
@@ -25,19 +36,6 @@ public class Waternet {
     public void setScanningNetid(int scanningNetid) {
         this.scanningNetid = scanningNetid;
     }
-
-    private int scanningNetid; //这个表b_scanning_recordnet 的外键
-    private String boxSn; //箱包名称
-    private String boxId; //箱包ID
-    private String bankId;//网点ID
-    private String scanningDate;//日期
-    private String status; //0:正确入库   1：错误入库  2：遗漏
-    private String ScanningType;//1:网点入库 ； 0：网点出库
-
-    public Waternet() {
-
-    }
-
 
     public String getScanningType() {
         return ScanningType;

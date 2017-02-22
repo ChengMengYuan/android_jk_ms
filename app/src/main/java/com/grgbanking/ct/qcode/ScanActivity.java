@@ -11,16 +11,16 @@ import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 
 import com.grgbanking.ct.R;
 import com.grgbanking.ct.cach.DataCach;
+
+import java.util.ArrayList;
 
 /**
  * @author ：     cmy
@@ -31,7 +31,8 @@ import com.grgbanking.ct.cach.DataCach;
 
 public class ScanActivity extends Activity {
     private final static String SCAN_ACTION = "android.intent.ACTION_DECODE_DATA";
-//    List<Qcode> qcodes = new ArrayList<>();
+    int count = 1;//保存按钮点击次数
+    //    List<Qcode> qcodes = new ArrayList<>();
     private EditText showScanResult;
     private Button btn;
     private Button mScan;
@@ -44,6 +45,8 @@ public class ScanActivity extends Activity {
     private int soundid;
     private String barcodeStr;
     private boolean isScaning = false;
+    private String rfidNum = "";
+    private ArrayList<String> codelist = new ArrayList<String>();
     private BroadcastReceiver mScanReceiver = new BroadcastReceiver() {
 
         @Override
@@ -59,11 +62,7 @@ public class ScanActivity extends Activity {
             barcodeStr = new String(barcode, 0, barocodelen);
 
             String barcodeStr = intent.getStringExtra("barcode_string");//直接获取字符串
-//            Qcode qcode = new Qcode();
-            //            qcode.setQcode(barcodeStr);
-            //            qcodes.add(qcode);
-//            DataCachcodeMap.put(barcodeStr,"value");
-            DataCach.codeMap.put("qcode",barcodeStr);
+
             showScanResult.setText(barcodeStr);
         }
     };
@@ -76,6 +75,7 @@ public class ScanActivity extends Activity {
         setContentView(R.layout.sacn_activity);
         mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         setupView();
+        getInfo();
     }
 
     private void initScan() {
@@ -88,21 +88,27 @@ public class ScanActivity extends Activity {
 
 
     private void setupView() {
-        // TODO Auto-generated method stub
         showScanResult = (EditText) findViewById(R.id.scan_result);
         btn = (Button) findViewById(R.id.manager);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
+                DataCach.codeMap.put("" + count, barcodeStr);
+                DataCach.qcodeMap.put(rfidNum, DataCach.codeMap);
 
-                //                if (mScanManager.getTriggerMode() != Triggering.CONTINUOUS)
-                //                    mScanManager.setTriggerMode(Triggering.CONTINUOUS);
+                Intent intent = new Intent();
+                intent.setAction("action.refreshQCode");
+                intent.putExtra("rfidNum", rfidNum);
+                intent.putExtra("QRcode",barcodeStr);
+                ScanActivity.this.sendBroadcast(intent);
+                count++;
             }
         });
         mScan = (Button) findViewById(R.id.scan);
         mScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 mScanManager.stopDecode();
                 isScaning = true;
                 try {
@@ -111,7 +117,6 @@ public class ScanActivity extends Activity {
                     e.printStackTrace();
                 }
                 mScanManager.startDecode();
-
             }
         });
 
@@ -137,12 +142,6 @@ public class ScanActivity extends Activity {
             isScaning = false;
         }
         unregisterReceiver(mScanReceiver);
-
-        //通知childAdapter更新ListView
-        LayoutInflater inflater = LayoutInflater.from(ScanActivity.this);
-        final View child = inflater.inflate(R.layout.qcode_list, null);
-        ListView childListview = (ListView) child.findViewById(R.id.qcode_list_item);
-        childListview.setAdapter(new ChildAdapter(ScanActivity.this));
     }
 
     @Override
@@ -163,5 +162,15 @@ public class ScanActivity extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         return super.onKeyDown(keyCode, event);
+    }
+
+    /**
+     * 获取qcode传过来的rfidNum
+     *
+     * @return
+     */
+    public String getInfo() {
+        rfidNum = getIntent().getStringExtra("rfidNum");
+        return rfidNum;
     }
 }

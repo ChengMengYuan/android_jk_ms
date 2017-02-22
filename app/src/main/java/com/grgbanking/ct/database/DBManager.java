@@ -128,6 +128,7 @@ public class DBManager {
      * @param netInfos
      */
     public void addNetInfo(List<NetInfo> netInfos) {
+        // TODO: 2017/2/17 添加flag区分出库入库 0是入库，1是出库 
         try {
             ContentValues values = new ContentValues();
             for (NetInfo netInfo : netInfos) {

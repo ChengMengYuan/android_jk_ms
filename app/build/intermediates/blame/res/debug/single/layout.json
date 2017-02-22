@@ -4,6 +4,10 @@
         "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\boxes_list_item.xml"
     },
     {
+        "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\layout\\stat_activity.xml",
+        "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\stat_activity.xml"
+    },
+    {
         "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\layout\\sacn_activity.xml",
         "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\sacn_activity.xml"
     },
@@ -12,12 +16,12 @@
         "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\main_list_item.xml"
     },
     {
-        "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\layout\\login.xml",
-        "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\login.xml"
-    },
-    {
         "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_title.xml",
         "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\activity_title.xml"
+    },
+    {
+        "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\layout\\login.xml",
+        "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\login.xml"
     },
     {
         "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\layout\\peixiangdetail.xml",
@@ -40,12 +44,12 @@
         "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\peixiang.xml"
     },
     {
-        "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\layout\\detail.xml",
-        "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\detail.xml"
-    },
-    {
         "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\layout\\progress.xml",
         "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\progress.xml"
+    },
+    {
+        "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\layout\\detail.xml",
+        "source": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\src\\main\\res\\layout\\detail.xml"
     },
     {
         "merged": "D:\\Develop\\workspaces\\AndroidStudio\\android_jk(ms)\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_qr_scan.xml",

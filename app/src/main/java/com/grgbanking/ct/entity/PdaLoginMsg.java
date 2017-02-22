@@ -17,6 +17,7 @@ import java.util.Map;
  * @Description :
  */
 
+
 public class PdaLoginMsg extends PdaLoginManInfo implements Serializable {
 
     private String lineId;
